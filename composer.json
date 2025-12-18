@@ -1,0 +1,22 @@
+{
+    "name": "escorp/wb-api-client",
+    "description": "Laravel package for Wildberries API",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "escorp\\WbApiClient\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4",
+        "illuminate/support": "^8.0|^9.0|^10.0|^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "escorp\\WbApiClient\\WbApiClientServiceProvider"
+            ]
+        }
+    }
+}
