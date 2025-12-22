@@ -5,7 +5,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "escorp\\WbApiClient\\": "src/"
+            "Escorp\\WbApiClient\\": "src/"
         }
     },
     "require": {
@@ -15,7 +15,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "escorp\\WbApiClient\\WbApiClientServiceProvider"
+                "Escorp\\WbApiClient\\WbApiClientServiceProvider"
             ]
         }
     }

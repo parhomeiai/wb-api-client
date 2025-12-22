@@ -1,6 +1,6 @@
 <?php
 
-namespace Parhomeiai\WbApiClient;
+namespace Escorp\WbApiClient;
 
 class WbApiClient
 {
