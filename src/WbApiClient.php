@@ -2,13 +2,15 @@
 
 namespace Escorp\WbApiClient;
 
+use Escorp\WbApiClient\Api\Prices\PricesApi;
+
 class WbApiClient
 {
-    protected string $apiKey;
+    public PricesApi $prices;
 
-    public function __construct(?string $apiKey)
+    public function __construct(PricesApi $prices)
     {
-        $this->apiKey = $apiKey ?? '';
+        $this->prices = $prices;
     }
 
     public function ping(): string

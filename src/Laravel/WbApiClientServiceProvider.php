@@ -4,19 +4,30 @@ namespace Escorp\WbApiClient\Laravel;
 
 use Escorp\WbApiClient\WbApiClient;
 use Illuminate\Support\ServiceProvider;
+use GuzzleHttp\Client;
+use Escorp\WbApiClient\Api\Prices\PricesApi;
+use Escorp\WbApiClient\Auth\StaticTokenProvider;
+use Escorp\WbApiClient\Http\GuzzleHttpClient;
 
 class WbApiClientServiceProvider extends ServiceProvider
 {
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/wb-api-client.php',
-            'wb-api-client'
+            __DIR__ . '/../../config/wb-api-client.php', 'wb-api-client'
         );
 
         $this->app->singleton(WbApiClient::class, function () {
+            $http = new GuzzleHttpClient(
+                new Client(['timeout' => config('wb.http.timeout')]),
+                config('wb.http.retry.times'),
+                config('wb.http.retry.sleep_ms')
+            );
+
+            $token = new StaticTokenProvider(config('wb.token'));
+
             return new WbApiClient(
-                config('wb-api-client.api_key')
+                new PricesApi($http, $token)
             );
         });
     }
