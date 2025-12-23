@@ -6,7 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Escorp\WbApiClient\Contracts\HttpClientInterface;
-use Escorp\WbApiClient\Exceptions\WbApiException;
+use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 final class GuzzleHttpClient implements HttpClientInterface
 {
@@ -43,7 +43,7 @@ final class GuzzleHttpClient implements HttpClientInterface
                 goto start;
             }
 
-            throw WbApiException::fromException($e);
+            throw WbApiClientException::fromException($e);
         }
     }
 }
