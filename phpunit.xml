@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+    bootstrap="vendor/autoload.php"
+    colors="true"
+    verbose="true"
+    failOnRisky="true"
+    failOnWarning="true"
+>
+    <testsuites>
+        <testsuite name="WB API Client Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <!-- чтобы тесты не лезли в реальные env -->
+        <env name="WB_API_TOKEN" value="test-token"/>
+    </php>
+</phpunit>
