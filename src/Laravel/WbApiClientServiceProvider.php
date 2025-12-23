@@ -1,7 +1,8 @@
 <?php
 
-namespace Escorp\WbApiClient;
+namespace Escorp\WbApiClient\Laravel;
 
+use Escorp\WbApiClient\WbApiClient;
 use Illuminate\Support\ServiceProvider;
 
 class WbApiClientServiceProvider extends ServiceProvider
@@ -9,7 +10,7 @@ class WbApiClientServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/wb-api-client.php',
+            __DIR__ . '/../../config/wb-api-client.php',
             'wb-api-client'
         );
 
@@ -23,7 +24,7 @@ class WbApiClientServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/wb-api-client.php' =>
+            __DIR__ . '/../../config/wb-api-client.php' =>
                 config_path('wb-api-client.php'),
         ], 'wb-api-client-config');
     }

@@ -8,6 +8,11 @@
             "Escorp\\WbApiClient\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Escorp\\WbApiClient\\Tests\\": "tests/"
+        }
+    },
     "require": {
         "php": ">=7.4",
         "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
@@ -20,7 +25,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Escorp\\WbApiClient\\WbApiClientServiceProvider"
+                "Escorp\\WbApiClient\\Laravel\\WbApiClientServiceProvider"
             ]
         }
     },
