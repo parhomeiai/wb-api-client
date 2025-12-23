@@ -19,12 +19,12 @@ class WbApiClientServiceProvider extends ServiceProvider
 
         $this->app->singleton(WbApiClient::class, function () {
             $http = new GuzzleHttpClient(
-                new Client(['timeout' => config('wb.http.timeout')]),
-                config('wb.http.retry.times'),
-                config('wb.http.retry.sleep_ms')
+                new Client(['timeout' => config('wb-api-client.http.timeout')]),
+                config('wb-api-client.http.retry.times'),
+                config('wb-api-client.http.retry.sleep_ms')
             );
 
-            $token = new StaticTokenProvider(config('wb.token'));
+            $token = new StaticTokenProvider(config('wb-api-client.api_key'));
 
             return new WbApiClient(
                 new PricesApi($http, $token)
