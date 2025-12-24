@@ -50,5 +50,20 @@ class WbApiResponseDto
     {
         return $this->error === true;
     }
+
+    function getData(): mixed
+    {
+        return $this->data;
+    }
+
+    function getError(): bool
+    {
+        return $this->error;
+    }
+
+    function getErrorText(): string
+    {
+        return $this->errorText;
+    }
 }
 

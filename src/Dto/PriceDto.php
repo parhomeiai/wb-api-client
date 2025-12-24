@@ -30,9 +30,9 @@ final class PriceDto
 
     /**
      *
-     * @param int $nmId
-     * @param string $vendorCode
-     * @param array $sizes
+     * @param int $nmId - Артикул WB
+     * @param string $vendorCode - Артикул продавца
+     * @param array $sizes - Размеры товара
      * @param string|null $currency
      * @param int|null $discount
      * @param int|null $clubDiscount

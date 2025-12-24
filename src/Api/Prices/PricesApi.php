@@ -57,6 +57,8 @@ final class PricesApi
             }
         }
 
+        $pricesResponseDto->errorText = trim($pricesResponseDto->errorText, " \t\n\r\0\x0B;");
+
         return $pricesResponseDto;
     }
 }
