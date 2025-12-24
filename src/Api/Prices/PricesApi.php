@@ -4,7 +4,7 @@ namespace Escorp\WbApiClient\Api\Prices;
 
 use Escorp\WbApiClient\Contracts\HttpClientInterface;
 use Escorp\WbApiClient\Contracts\TokenProviderInterface;
-use Escorp\WbApiClient\Dto\PriceDto;
+use Escorp\WbApiClient\Dto\PricesResponseDto;
 
 final class PricesApi
 {
@@ -21,21 +21,18 @@ final class PricesApi
 
     /**
      * Возвращает информацию о ценах
-     * 
+     *
      * @param array $nmIds
-     * @return array | PriceDto[]
+     * @return PricesResponseDto
      */
-    public function getPrices(array $nmIds): array
+    public function getPrices(array $nmIds): PricesResponseDto
     {
         $response = $this->http->request('POST', self::URL, [
             'headers' => ['Authorization' => $this->token->getToken()],
             'json' => ['nmList' => array_values($nmIds)],
         ]);
 
-        return array_map(
-            static fn($item) => PriceDto::fromArray($item),
-            $response['data']['listGoods'] ?? []
-        );
+        return PricesResponseDto::fromArray($response);
     }
 
     /**
@@ -43,15 +40,24 @@ final class PricesApi
      *
      * @param array $nmIds
      * @param int $chunk
-     * @return array | PriceDto[]
+     * @return PricesResponseDto
      */
-    public function getPricesBatch(array $nmIds, int $chunk = 1000): array
+    public function getPricesBatch(array $nmIds, int $chunk = 1000): PricesResponseDto
     {
-        $result = [];
+        $pricesResponseDto = new PricesResponseDto(null, false, '');
+
         foreach (array_chunk($nmIds, $chunk) as $part) {
-            $result = array_merge($result, $this->getPrices($part));
+            $response = $this->getPrices($part);
+
+            $pricesResponseDto->prices = array_merge($pricesResponseDto->prices, $response->prices);
+
+            if ($response->hasError()) {
+                $pricesResponseDto->error = true;
+                $pricesResponseDto->errorText .= $response->errorText . '; ';
+            }
         }
-        return $result;
+
+        return $pricesResponseDto;
     }
 }
 

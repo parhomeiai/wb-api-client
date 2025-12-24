@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Escorp\WbApiClient\Factory;
 
 use GuzzleHttp\Client as GuzzleClient;
-use Escorp\WbApiClientt\Api\Prices\PricesApi;
+use Escorp\WbApiClient\Api\Prices\PricesApi;
 use Escorp\WbApiClient\Auth\StaticTokenProvider;
 use Escorp\WbApiClient\Http\GuzzleHttpClient;
 use Escorp\WbApiClient\WbApiClient;
