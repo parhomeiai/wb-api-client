@@ -20,6 +20,37 @@ final class PricesApi
     }
 
     /**
+     * Валидация Артикулов WB (должно быть положительное целое число)
+     * @param array $nmIds
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    private function normalizeNmIds(array $nmIds): array
+    {
+        if (empty($nmIds)) {
+            throw new \InvalidArgumentException('nmIds array is empty');
+        }
+
+        return array_map(function ($id) {
+            if (!is_numeric($id)) {
+                throw new \InvalidArgumentException(
+                    'nmID must be integer, got: ' . gettype($id)
+                );
+            }
+
+            $int = (int) $id;
+
+            if ($int <= 0) {
+                throw new \InvalidArgumentException(
+                    'nmID must be positive integer, got: ' . $id
+                );
+            }
+
+            return $int;
+        }, array_values($nmIds));
+    }
+
+    /**
      * Возвращает информацию о ценах
      *
      * @param array $nmIds
@@ -27,6 +58,8 @@ final class PricesApi
      */
     public function getPrices(array $nmIds): PricesResponseDto
     {
+        $nmIds = $this->normalizeNmIds($nmIds);
+
         $response = $this->http->request('POST', self::URL, [
             'headers' => ['Authorization' => $this->token->getToken()],
             'json' => ['nmList' => array_values($nmIds)],

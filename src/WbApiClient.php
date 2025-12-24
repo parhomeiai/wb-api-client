@@ -17,4 +17,13 @@ class WbApiClient
     {
         return 'WB API client works';
     }
+
+    /**
+     * Возвращает объект для работы с ценами
+     * @return PricesApi
+     */
+    public function pricesApi(): PricesApi
+    {
+        return $this->prices;
+    }
 }

@@ -109,6 +109,14 @@ class PricesApiTest extends TestCase
         $api->getPricesBatch([1]);
     }
 
+    public function test_it_throws_exception_on_invalid_nmids(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $api = new PricesApi(new FakeHttpClient(), new StaticTokenProvider('fake-token'));
+        $api->getPrices(['abc']);
+    }
+
 /*
     public function test_get_prices_returns_price_dto_objects(): void
     {
