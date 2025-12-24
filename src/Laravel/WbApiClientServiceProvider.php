@@ -4,10 +4,12 @@ namespace Escorp\WbApiClient\Laravel;
 
 use Escorp\WbApiClient\WbApiClient;
 use Illuminate\Support\ServiceProvider;
-use GuzzleHttp\Client;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\HttpFactory;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
 use Escorp\WbApiClient\Auth\StaticTokenProvider;
 use Escorp\WbApiClient\Http\GuzzleHttpClient;
+use Escorp\WbApiClient\Http\Psr18HttpClient;
 
 class WbApiClientServiceProvider extends ServiceProvider
 {
@@ -18,8 +20,15 @@ class WbApiClientServiceProvider extends ServiceProvider
         );
 
         $this->app->singleton(WbApiClient::class, function () {
+            $psr18 = new Psr18HttpClient(
+                new GuzzleClient(['timeout' => config('wb-api-client.http.timeout')]),
+                new HttpFactory(),
+                new HttpFactory()
+            );
+
+
             $http = new GuzzleHttpClient(
-                new Client(['timeout' => config('wb-api-client.http.timeout')]),
+                $psr18,
                 config('wb-api-client.http.retry.times'),
                 config('wb-api-client.http.retry.sleep_ms')
             );

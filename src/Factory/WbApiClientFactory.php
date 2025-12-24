@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Escorp\WbApiClient\Factory;
 
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\HttpFactory;
+use Psr\Http\Client\ClientInterface;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
 use Escorp\WbApiClient\Auth\StaticTokenProvider;
 use Escorp\WbApiClient\Http\GuzzleHttpClient;
+use Escorp\WbApiClient\Http\Psr18HttpClient;
 use Escorp\WbApiClient\WbApiClient;
 
 final class WbApiClientFactory
@@ -22,31 +25,33 @@ final class WbApiClientFactory
      *   retry_sleep_ms?: int
      * } $options
      */
-    public static function make(string $token, array $options = []): WbApiClient
+    public static function make(string $token, array $options = [], ?ClientInterface $psr18Client = null): WbApiClient
     {
         $timeout = $options['timeout'] ?? 10;
         $retryTimes = $options['retry_times'] ?? 3;
         $retrySleepMs = $options['retry_sleep_ms'] ?? 300;
 
-        // 1. HTTP engine
-        $guzzle = new GuzzleClient([
-            'timeout' => $timeout,
-        ]);
+        if ($psr18Client === null) {
+            // дефолтный Guzzle → PSR-18 адаптер
+            $psr18Client = new GuzzleClient(['timeout' => $timeout]);
+        }
 
-        // 2. HTTP client with retry
-        $httpClient = new GuzzleHttpClient(
-            $guzzle,
-            $retryTimes,
-            $retrySleepMs
+        $http = new Psr18HttpClient(
+            $psr18Client,
+            new HttpFactory(),
+            new HttpFactory()
         );
 
-        // 3. Token provider
+        //retry-обертка поверх PSR-18
+        $guzzleHttpClient = new GuzzleHttpClient($http, $retryTimes, $retrySleepMs);
+
+        // Token provider
         $tokenProvider = new StaticTokenProvider($token);
 
-        // 4. Domain API
-        $pricesApi = new PricesApi($httpClient, $tokenProvider);
+        //Domain API
+        $pricesApi = new PricesApi($guzzleHttpClient, $tokenProvider);
 
-        // 5. Root client
+        //Root client
         return new WbApiClient($pricesApi);
     }
 }

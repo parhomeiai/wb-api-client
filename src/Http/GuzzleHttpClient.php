@@ -10,11 +10,11 @@ use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 final class GuzzleHttpClient implements HttpClientInterface
 {
-    private Client $client;
+    private HttpClientInterface $client;
     private int $retryTimes;
     private int $retrySleepMs;
 
-    public function __construct(Client $client, int $retryTimes, int $retrySleepMs)
+    public function __construct(HttpClientInterface $client, int $retryTimes, int $retrySleepMs)
     {
         $this->client = $client;
         $this->retryTimes = $retryTimes;
@@ -33,7 +33,7 @@ final class GuzzleHttpClient implements HttpClientInterface
 
         start:
         try {
-            return $this->client->request($method, $url, $options);
+            return $this->client->requestRaw($method, $url, $options);
         } catch (RequestException $e) {
             $status = $e->getResponse() ? $e->getResponse()->getStatusCode() : 0;
 
