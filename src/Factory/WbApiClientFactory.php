@@ -15,6 +15,7 @@ use Escorp\WbApiClient\Auth\StaticTokenProvider;
 use Escorp\WbApiClient\Http\GuzzleHttpClient;
 use Escorp\WbApiClient\Http\Psr18HttpClient;
 use Escorp\WbApiClient\WbApiClient;
+use Escorp\WbApiClient\Api\ApiHostRegistry;
 
 final class WbApiClientFactory
 {
@@ -51,9 +52,12 @@ final class WbApiClientFactory
         // Token provider
         $tokenProvider = new StaticTokenProvider($token);
 
+        // Host Registry
+        $apiHostRegistry = new ApiHostRegistry();
+
         //Domain API
-        $pingApi = new PingApi($guzzleHttpClient, $tokenProvider);
-        $pricesApi = new PricesApi($guzzleHttpClient, $tokenProvider);
+        $pingApi = new PingApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
+        $pricesApi = new PricesApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
 
         //Root client
         return new WbApiClient($pingApi, $pricesApi);

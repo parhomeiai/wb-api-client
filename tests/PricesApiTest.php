@@ -6,10 +6,10 @@ namespace Escorp\WbApiClient\Tests;
 use PHPUnit\Framework\TestCase;
 use Mockery;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
+use Escorp\WbApiClient\Api\ApiHostRegistry;
 use Escorp\WbApiClient\Tests\Fake\FakeHttpClient;
 use Escorp\WbApiClient\Exceptions\DtoMappingException;
 use Escorp\WbApiClient\Auth\StaticTokenProvider;
-use Escorp\WbApiClient\Contracts\HttpClientInterface;
 
 class PricesApiTest extends TestCase
 {
@@ -48,7 +48,7 @@ class PricesApiTest extends TestCase
             'errorText' => '',
         ]);
 
-        $api = new PricesApi($client, new StaticTokenProvider('fake-token'));
+        $api = new PricesApi($client, new StaticTokenProvider('fake-token'), new ApiHostRegistry());
 
         $response = $api->getPricesBatch([173901872]);
 
@@ -73,7 +73,7 @@ class PricesApiTest extends TestCase
             'errorText' => 'Invalid token'
         ]);
 
-        $api = new PricesApi($client, new StaticTokenProvider('bade-token'));
+        $api = new PricesApi($client, new StaticTokenProvider('bade-token'), new ApiHostRegistry());
 
         $response = $api->getPricesBatch([1]);
 
@@ -106,7 +106,7 @@ class PricesApiTest extends TestCase
             'errorText' => '',
         ]);
 
-        $api = new PricesApi($client, new StaticTokenProvider('fake-token'));
+        $api = new PricesApi($client, new StaticTokenProvider('fake-token'), new ApiHostRegistry());
         $api->getPricesBatch([1]);
     }
 
@@ -114,7 +114,7 @@ class PricesApiTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $api = new PricesApi(new FakeHttpClient(), new StaticTokenProvider('fake-token'));
+        $api = new PricesApi(new FakeHttpClient(), new StaticTokenProvider('fake-token'), new ApiHostRegistry());
         $api->getPrices(['abc']);
     }
 

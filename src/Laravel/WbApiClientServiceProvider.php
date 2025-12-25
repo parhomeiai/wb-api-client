@@ -5,12 +5,6 @@ namespace Escorp\WbApiClient\Laravel;
 use Escorp\WbApiClient\WbApiClient;
 use Escorp\WbApiClient\Factory\WbApiClientFactory;
 use Illuminate\Support\ServiceProvider;
-use GuzzleHttp\Client as GuzzleClient;
-use GuzzleHttp\Psr7\HttpFactory;
-use Escorp\WbApiClient\Api\Prices\PricesApi;
-use Escorp\WbApiClient\Auth\StaticTokenProvider;
-use Escorp\WbApiClient\Http\GuzzleHttpClient;
-use Escorp\WbApiClient\Http\Psr18HttpClient;
 
 class WbApiClientServiceProvider extends ServiceProvider
 {

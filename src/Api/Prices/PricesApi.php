@@ -4,21 +4,22 @@ namespace Escorp\WbApiClient\Api\Prices;
 
 use Escorp\WbApiClient\Contracts\HttpClientInterface;
 use Escorp\WbApiClient\Contracts\TokenProviderInterface;
+use Escorp\WbApiClient\Contracts\ApiHostRegistryInterface;
 use Escorp\WbApiClient\Dto\PricesResponseDto;
 use Escorp\WbApiClient\Dto\PricesBatchResponseDto;
 use Escorp\WbApiClient\Dto\ResponseErrorDto;
 
 final class PricesApi
 {
-    private const URL = 'https://discounts-prices-api.wildberries.ru/api/v2/list/goods/filter';
-
     private HttpClientInterface $http;
     private TokenProviderInterface $token;
+    private ApiHostRegistryInterface $hosts;
 
-    public function __construct(HttpClientInterface $http, TokenProviderInterface $token)
+    public function __construct(HttpClientInterface $http, TokenProviderInterface $token, ApiHostRegistryInterface $hosts)
     {
         $this->http = $http;
         $this->token = $token;
+        $this->hosts = $hosts;
     }
 
     /**
@@ -60,11 +61,13 @@ final class PricesApi
      */
     public function getPrices(array $nmIds): PricesResponseDto
     {
-        $nmIds = $this->normalizeNmIds($nmIds);
+        $nmIdsValidate = $this->normalizeNmIds($nmIds);
 
-        $response = $this->http->request('POST', self::URL, [
+        $url = $this->hosts->get('prices') . '/api/v2/list/goods/filter';
+
+        $response = $this->http->request('POST', $url, [
             'headers' => ['Authorization' => $this->token->getToken()],
-            'json' => ['nmList' => array_values($nmIds)],
+            'json' => ['nmList' => array_values($nmIdsValidate)],
         ]);
 
         return PricesResponseDto::fromArray($response);
@@ -97,16 +100,7 @@ final class PricesApi
                 $pricesBatchResponseDto->items[$priceDto->nmId][] = $priceDto;
                 $pricesBatchResponseDto->prices[] = $priceDto;
             }
-
-            /*$pricesResponseDto->prices = array_merge($pricesResponseDto->prices, $response->prices);
-
-            if ($response->hasError()) {
-                $pricesResponseDto->error = true;
-                $pricesResponseDto->errorText .= $response->errorText . '; ';
-            }*/
         }
-
-        //$pricesResponseDto->errorText = trim($pricesResponseDto->errorText, " \t\n\r\0\x0B;");
 
         return $pricesBatchResponseDto;
     }
