@@ -52,7 +52,7 @@ class PricesApiTest extends TestCase
 
         $response = $api->getPricesBatch([173901872]);
 
-        $this->assertFalse($response->hasError());
+        $this->assertFalse($response->hasErrors());
         $this->assertCount(1, $response->prices);
 
         $price = $response->prices[0];
@@ -77,8 +77,9 @@ class PricesApiTest extends TestCase
 
         $response = $api->getPricesBatch([1]);
 
-        $this->assertTrue($response->hasError());
-        $this->assertSame('Invalid token', $response->getErrorText());
+        $this->assertTrue($response->hasErrors());
+        $this->assertCount(1, $response->getErrors());
+        $this->assertSame('Invalid token', $response->errors[0]->getMessage());
     }
 
     public function test_it_throws_exception_on_invalid_dto(): void

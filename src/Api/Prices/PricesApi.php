@@ -5,6 +5,8 @@ namespace Escorp\WbApiClient\Api\Prices;
 use Escorp\WbApiClient\Contracts\HttpClientInterface;
 use Escorp\WbApiClient\Contracts\TokenProviderInterface;
 use Escorp\WbApiClient\Dto\PricesResponseDto;
+use Escorp\WbApiClient\Dto\PricesBatchResponseDto;
+use Escorp\WbApiClient\Dto\ResponseErrorDto;
 
 final class PricesApi
 {
@@ -73,26 +75,40 @@ final class PricesApi
      *
      * @param array $nmIds
      * @param int $chunk
-     * @return PricesResponseDto
+     * @return PricesBatchResponseDto
      */
-    public function getPricesBatch(array $nmIds, int $chunk = 1000): PricesResponseDto
+    public function getPricesBatch(array $nmIds, int $chunk = 1000): PricesBatchResponseDto
     {
-        $pricesResponseDto = new PricesResponseDto(null, false, '');
+        $pricesBatchResponseDto = new PricesBatchResponseDto();
 
         foreach (array_chunk($nmIds, $chunk) as $part) {
             $response = $this->getPrices($part);
 
-            $pricesResponseDto->prices = array_merge($pricesResponseDto->prices, $response->prices);
+            if ($response->hasError()) {
+                $pricesBatchResponseDto->errors[] = new ResponseErrorDto(
+                    $part,
+                    $response->errorText,
+                    $response->data
+                );
+                continue;
+            }
+
+            foreach ($response->prices as $priceDto) {
+                $pricesBatchResponseDto->items[$priceDto->nmId][] = $priceDto;
+                $pricesBatchResponseDto->prices[] = $priceDto;
+            }
+
+            /*$pricesResponseDto->prices = array_merge($pricesResponseDto->prices, $response->prices);
 
             if ($response->hasError()) {
                 $pricesResponseDto->error = true;
                 $pricesResponseDto->errorText .= $response->errorText . '; ';
-            }
+            }*/
         }
 
-        $pricesResponseDto->errorText = trim($pricesResponseDto->errorText, " \t\n\r\0\x0B;");
+        //$pricesResponseDto->errorText = trim($pricesResponseDto->errorText, " \t\n\r\0\x0B;");
 
-        return $pricesResponseDto;
+        return $pricesBatchResponseDto;
     }
 }
 
