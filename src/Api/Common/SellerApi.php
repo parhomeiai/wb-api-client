@@ -29,7 +29,7 @@ class SellerApi
      * Метод позволяет получать наименование продавца и ID его профиля.
      * @return SellerInfoResponseDto
      */
-    public function sellerInfo(): SellerInfoResponseDto
+    public function getSellerInfo(): SellerInfoResponseDto
     {
         $url = $this->hosts->get('common') . '/api/v1/seller-info';
 
