@@ -67,6 +67,12 @@ final class Psr18HttpClient implements HttpClientInterface
     public function requestRaw(string $method, string $url, array $options = []): ResponseInterface
     {
         try {
+            // ---------- QUERY ----------
+            if (!empty($options['query'])) {
+                $query = http_build_query($options['query']);
+                $url .= (str_contains($url, '?') ? '&' : '?') . $query;
+            }
+
             $request = $this->requestFactory->createRequest($method, $url);
 
             // headers
@@ -84,6 +90,14 @@ final class Psr18HttpClient implements HttpClientInterface
                 $request = $request
                     ->withHeader('Content-Type', 'application/json')
                     ->withBody($stream);
+            }
+
+             // ---------- FORM PARAMS ----------
+            if (array_key_exists('form_params', $options)) {
+                $body = http_build_query($options['form_params']);
+                $request = $request
+                    ->withHeader('Content-Type', 'application/x-www-form-urlencoded')
+                    ->withBody($this->streamFactory->createStream($body));
             }
 
             // raw body
