@@ -4,6 +4,7 @@ namespace Escorp\WbApiClient;
 
 use Escorp\WbApiClient\Api\Common\PingApi;
 use Escorp\WbApiClient\Api\Common\NewsApi;
+use Escorp\WbApiClient\Api\Common\SellerApi;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
 
 class WbApiClient
@@ -12,15 +13,19 @@ class WbApiClient
 
     public NewsApi $newsApi;
 
+    public SellerApi $sellerApi;
+
     public PricesApi $prices;
 
     public function __construct(
             PingApi $ping,
             NewsApi $newsApi,
+            SellerApi $sellerApi,
             PricesApi $prices
     ) {
         $this->ping = $ping;
         $this->newsApi = $newsApi;
+        $this->sellerApi = $sellerApi;
         $this->prices = $prices;
     }
 
@@ -45,6 +50,15 @@ class WbApiClient
     public function newsApi(): NewsApi
     {
         return $this->newsApi;
+    }
+
+    /**
+     * Возвращает объект для получения информации о продавце
+     * @return SellerApi
+     */
+    public function sellerApi(): SellerApi
+    {
+        return $this->sellerApi;
     }
 
     /**
