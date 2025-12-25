@@ -7,7 +7,10 @@ namespace Escorp\WbApiClient\Factory;
 use GuzzleHttp\Client as GuzzleClient;
 use GuzzleHttp\Psr7\HttpFactory;
 use Psr\Http\Client\ClientInterface;
+
+use Escorp\WbApiClient\Api\Common\PingApi;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
+
 use Escorp\WbApiClient\Auth\StaticTokenProvider;
 use Escorp\WbApiClient\Http\GuzzleHttpClient;
 use Escorp\WbApiClient\Http\Psr18HttpClient;
@@ -49,10 +52,11 @@ final class WbApiClientFactory
         $tokenProvider = new StaticTokenProvider($token);
 
         //Domain API
+        $pingApi = new PingApi($guzzleHttpClient, $tokenProvider);
         $pricesApi = new PricesApi($guzzleHttpClient, $tokenProvider);
 
         //Root client
-        return new WbApiClient($pricesApi);
+        return new WbApiClient($pingApi, $pricesApi);
     }
 }
 
