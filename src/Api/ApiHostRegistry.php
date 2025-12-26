@@ -13,6 +13,7 @@ class ApiHostRegistry implements ApiHostRegistryInterface
     private array $hosts = [
         'common'  => 'https://common-api.wildberries.ru',
         'prices'  => 'https://discounts-prices-api.wildberries.ru',
+        'users'  => 'https://user-management-api.wildberries.ru',
     ];
 
     /**

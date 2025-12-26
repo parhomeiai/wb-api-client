@@ -36,7 +36,7 @@ class WbApiResponseDto
     public static function fromArray(array $response): self
     {
         return new self(
-            $response['data'] ?? null,
+            $response['data'] ?? $response,
             (bool) ($response['error'] ?? false),
             (string) ($response['errorText'] ?? '')
         );

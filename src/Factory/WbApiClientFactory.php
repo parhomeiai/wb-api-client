@@ -11,6 +11,7 @@ use Psr\Http\Client\ClientInterface;
 use Escorp\WbApiClient\Api\Common\PingApi;
 use Escorp\WbApiClient\Api\Common\NewsApi;
 use Escorp\WbApiClient\Api\Common\SellerApi;
+use Escorp\WbApiClient\Api\Users\InviteApi;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
 
 use Escorp\WbApiClient\Auth\StaticTokenProvider;
@@ -61,10 +62,11 @@ final class WbApiClientFactory
         $pingApi = new PingApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $newsApi = new NewsApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $sellerApi = new SellerApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
+        $inviteApi = new InviteApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $pricesApi = new PricesApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
 
         //Root client
-        return new WbApiClient($pingApi, $newsApi, $sellerApi, $pricesApi);
+        return new WbApiClient($pingApi, $newsApi, $sellerApi, $inviteApi, $pricesApi);
     }
 }
 
