@@ -2,26 +2,13 @@
 
 namespace Escorp\WbApiClient\Api\Prices;
 
-use Escorp\WbApiClient\Contracts\HttpClientInterface;
-use Escorp\WbApiClient\Contracts\TokenProviderInterface;
-use Escorp\WbApiClient\Contracts\ApiHostRegistryInterface;
+use Escorp\WbApiClient\Api\AbstractWbApi;
 use Escorp\WbApiClient\Dto\PricesResponseDto;
 use Escorp\WbApiClient\Dto\PricesBatchResponseDto;
 use Escorp\WbApiClient\Dto\ResponseErrorDto;
 
-final class PricesApi
+final class PricesApi extends AbstractWbApi
 {
-    private HttpClientInterface $http;
-    private TokenProviderInterface $token;
-    private ApiHostRegistryInterface $hosts;
-
-    public function __construct(HttpClientInterface $http, TokenProviderInterface $token, ApiHostRegistryInterface $hosts)
-    {
-        $this->http = $http;
-        $this->token = $token;
-        $this->hosts = $hosts;
-    }
-
     /**
      * Валидация Артикулов WB (должно быть положительное целое число)
      * @param array $nmIds
@@ -65,8 +52,7 @@ final class PricesApi
 
         $url = $this->hosts->get('prices') . '/api/v2/list/goods/filter';
 
-        $response = $this->http->request('POST', $url, [
-            'headers' => ['Authorization' => $this->token->getToken()],
+        $response = $this->request('POST', $url, [
             'json' => ['nmList' => array_values($nmIdsValidate)],
         ]);
 

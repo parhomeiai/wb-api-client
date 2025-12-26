@@ -2,9 +2,7 @@
 
 namespace Escorp\WbApiClient\Api\Common;
 
-use Escorp\WbApiClient\Contracts\HttpClientInterface;
-use Escorp\WbApiClient\Contracts\TokenProviderInterface;
-use Escorp\WbApiClient\Contracts\ApiHostRegistryInterface;
+use Escorp\WbApiClient\Api\AbstractWbApi;
 use Escorp\WbApiClient\Dto\Common\SellerInfoResponseDto;
 
 /**
@@ -12,18 +10,8 @@ use Escorp\WbApiClient\Dto\Common\SellerInfoResponseDto;
  *
  * @author parhomey
  */
-class SellerApi
+class SellerApi extends AbstractWbApi
 {
-    private HttpClientInterface $http;
-    private TokenProviderInterface $token;
-    private ApiHostRegistryInterface $hosts;
-
-    public function __construct(HttpClientInterface $http, TokenProviderInterface $token, ApiHostRegistryInterface $hosts)
-    {
-        $this->http = $http;
-        $this->token = $token;
-        $this->hosts = $hosts;
-    }
 
     /**
      * Метод позволяет получать наименование продавца и ID его профиля.
@@ -33,9 +21,7 @@ class SellerApi
     {
         $url = $this->hosts->get('common') . '/api/v1/seller-info';
 
-        $response = $this->http->request('GET', $url, [
-            'headers' => ['Authorization' => $this->token->getToken()]
-        ]);
+        $response = $this->request('GET', $url);
 
         return SellerInfoResponseDto::fromArray($response);
     }
