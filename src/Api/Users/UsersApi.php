@@ -100,8 +100,21 @@ class UsersApi extends AbstractWbApi
         return WbApiResponseDto::fromArray($response);
     }
 
-    public function deleteUser()
+    /**
+     * Удалить пользователя
+     * @param int $deletedUserID - ID пользователя, которому будет закрыт доступ
+     * @return WbApiResponseDto
+     */
+    public function deleteUser(int $deletedUserID): WbApiResponseDto
     {
+        $response = $this->request(
+            'DELETE',
+            $this->getBaseUri() . '/api/v1/user',
+            [
+                'query'   => ['deletedUserID' => $deletedUserID],
+            ]
+        );
 
+        return WbApiResponseDto::fromArray($response);
     }
 }
