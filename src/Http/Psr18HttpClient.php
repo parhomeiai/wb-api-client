@@ -7,7 +7,10 @@ use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Escorp\WbApiClient\Contracts\HttpClientInterface;
+use Escorp\WbApiClient\Dto\WbErrorDto;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
+use Escorp\WbApiClient\Exceptions\WbHttpException;
+use InvalidArgumentException;
 
 /**
  * Поддержка любого PSR-18 клиента
@@ -66,6 +69,11 @@ final class Psr18HttpClient implements HttpClientInterface
      */
     public function requestRaw(string $method, string $url, array $options = []): ResponseInterface
     {
+        $bodyOptions = array_intersect(['json', 'form_params', 'body'], array_keys($options));
+        if (count($bodyOptions) > 1) {
+            throw new InvalidArgumentException('Only one of json, form_params or body is allowed');
+        }
+
         try {
             // ---------- QUERY ----------
             if (!empty($options['query'])) {
@@ -106,7 +114,26 @@ final class Psr18HttpClient implements HttpClientInterface
                 $request = $request->withBody($stream);
             }
 
-            return $this->client->sendRequest($request);
+            $response = $this->client->sendRequest($request);
+
+            $status = $response->getStatusCode();
+            if ($status < 200 || $status >= 300) {
+                $body = (string) $response->getBody();
+                $data = json_decode($body, true);
+
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    throw new WbHttpException(WbErrorDto::fromArray($data));
+                }
+
+                throw new WbApiClientException(
+                    'HTTP error ' . $status . ': ' . $body,
+                    $status
+                );
+            }
+
+            return $response;
+        } catch (WbHttpException $e) {
+            throw $e;
         } catch (\Throwable $e) {
             throw WbApiClientException::fromException($e);
         }
