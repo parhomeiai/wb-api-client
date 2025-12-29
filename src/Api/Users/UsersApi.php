@@ -56,6 +56,29 @@ class UsersApi extends AbstractWbApi
         return UsersResponseDto::fromArray($response);
     }
 
+    /**
+     * Возвращает всех пользователей
+     * 
+     * @param bool $isInviteOnly
+     * @return array UserDto[]
+     */
+    public function getAllUsers(bool $isInviteOnly = false): array
+    {
+        $pageSize = 100;
+        $offset = 0;
+        $result = [];
+
+        do {
+            $usersResponseDto = $this->getUsers($pageSize, $offset, $isInviteOnly);
+
+            $result = array_merge($result, $usersResponseDto->getUsers());
+            $offset += $pageSize;
+
+        } while (count($usersResponseDto->getUsers()) === $pageSize);
+
+        return $result;
+    }
+
     public function changeAccess()
     {
 

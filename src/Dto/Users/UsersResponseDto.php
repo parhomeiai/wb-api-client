@@ -71,6 +71,33 @@ final class UsersResponseDto extends WbApiResponseDto
         return $dto;
     }
 
+    /**
+     * Возвращает общее количество активных или приглашённых пользователей
+     * @return int
+     */
+    function getTotal(): int
+    {
+        return $this->total;
+    }
+
+    /**
+     * Возвращает количество активных или приглашённых пользователей на текущей странице
+     * @return int
+     */
+    function getCountInResponse(): int
+    {
+        return $this->countInResponse;
+    }
+
+    /**
+     * Возвращает информацию о пользователях
+     * @return array UserDto[]
+     */
+    function getUsers(): array
+    {
+        return $this->users;
+    }
+
 
 
 
