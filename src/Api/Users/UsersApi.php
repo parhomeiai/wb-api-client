@@ -4,6 +4,8 @@ namespace Escorp\WbApiClient\Api\Users;
 
 use Escorp\WbApiClient\Api\AbstractWbApi;
 use Escorp\WbApiClient\Dto\Users\UsersResponseDto;
+use Escorp\WbApiClient\Dto\Users\UpdateUsersAccessRequest;
+use Escorp\WbApiClient\Dto\WbApiResponseDto;
 use InvalidArgumentException;
 
 /**
@@ -58,7 +60,7 @@ class UsersApi extends AbstractWbApi
 
     /**
      * Возвращает всех пользователей
-     * 
+     *
      * @param bool $isInviteOnly
      * @return array UserDto[]
      */
@@ -79,9 +81,23 @@ class UsersApi extends AbstractWbApi
         return $result;
     }
 
-    public function changeAccess()
+    /**
+     * Изменить права доступа пользователей
+     *
+     * @param UpdateUsersAccessRequest $updateUsersAccessRequest
+     * @return WbApiResponseDto
+     */
+    public function updateUsersAccess(UpdateUsersAccessRequest $updateUsersAccessRequest): WbApiResponseDto
     {
+        $response = $this->request(
+            'PUT',
+            $this->getBaseUri() . '/api/v1/users/access',
+            [
+                'json' => $updateUsersAccessRequest->toRequestArray()
+            ]
+        );
 
+        return WbApiResponseDto::fromArray($response);
     }
 
     public function deleteUser()
