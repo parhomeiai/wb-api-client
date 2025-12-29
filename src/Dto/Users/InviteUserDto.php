@@ -69,15 +69,13 @@ final class InviteUserDto
      */
     private function validateAccess(array $access): array
     {
-        $map = [];
-
         foreach ($access as $item) {
             if (!$item instanceof AccessDto) {
                 throw new InvalidArgumentException('Access must be instance of AccessDto');
             }
         }
 
-        return array_values($map);
+        return $access;
     }
 
     /**

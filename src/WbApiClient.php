@@ -6,6 +6,7 @@ use Escorp\WbApiClient\Api\Common\PingApi;
 use Escorp\WbApiClient\Api\Common\NewsApi;
 use Escorp\WbApiClient\Api\Common\SellerApi;
 use Escorp\WbApiClient\Api\Users\InviteApi;
+use Escorp\WbApiClient\Api\Users\UsersApi;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
 
 class WbApiClient
@@ -18,6 +19,8 @@ class WbApiClient
 
     public InviteApi $inviteApi;
 
+    public UsersApi $usersApi;
+
     public PricesApi $prices;
 
     public function __construct(
@@ -25,12 +28,14 @@ class WbApiClient
             NewsApi $newsApi,
             SellerApi $sellerApi,
             InviteApi $inviteApi,
+            UsersApi $usersApi,
             PricesApi $prices
     ) {
         $this->ping = $ping;
         $this->newsApi = $newsApi;
         $this->sellerApi = $sellerApi;
         $this->inviteApi = $inviteApi;
+        $this->usersApi = $usersApi;
         $this->prices = $prices;
     }
 
@@ -82,5 +87,14 @@ class WbApiClient
     public function pricesApi(): PricesApi
     {
         return $this->prices;
+    }
+
+    /**
+     * Возвращает объект для управлениями пользователями
+     * @return UsersApi
+     */
+    public function usersApi(): UsersApi
+    {
+        return $this->usersApi;
     }
 }

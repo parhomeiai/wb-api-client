@@ -2,6 +2,8 @@
 
 namespace Escorp\WbApiClient\Dto\Users;
 
+use Escorp\WbApiClient\Exceptions\DtoMappingException;
+
 /**
  * Настройки доступа к разделам профиля продавца
  *
@@ -54,5 +56,25 @@ final class AccessDto
             'code' => $this->code,
             'disabled' => $this->disabled
         ];
+    }
+
+    /**
+     *
+     * @param array $data
+     * @return self
+     * @throws DtoMappingException
+     */
+    public static function fromArray(array $data): self
+    {
+        foreach (['code','disabled'] as $key) {
+            if (!array_key_exists($key, $data)) {
+                throw new DtoMappingException("AccessDto: missing field '{$key}'");
+            }
+        }
+
+        return new self(
+            (string) $data['code'],
+            (bool) $data['disabled'],
+        );
     }
 }

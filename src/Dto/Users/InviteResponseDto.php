@@ -58,7 +58,7 @@ final class InviteResponseDto extends WbApiResponseDto
     {
         foreach (['inviteID', 'expiredAt', 'isSuccess', 'inviteUrl'] as $key) {
             if (!array_key_exists($key, $response)) {
-                throw new DtoMappingException("PriceSizeDto: missing field '{$key}'");
+                throw new DtoMappingException("InviteResponseDto: missing field '{$key}'");
             }
         }
 
