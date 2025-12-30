@@ -6,6 +6,7 @@ use Escorp\WbApiClient\Api\AbstractWbApi;
 use Escorp\WbApiClient\Dto\Content\ParentCategoriesResponse;
 use Escorp\WbApiClient\Dto\Content\SubjectsResponse;
 use Escorp\WbApiClient\Dto\Content\SubjectCharcsResponse;
+use Escorp\WbApiClient\Dto\Content\ColorsResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
@@ -137,5 +138,23 @@ class ContentApi extends AbstractWbApi
         );
 
         return SubjectCharcsResponse::fromArray($response);
+    }
+
+    /**
+     * Метод возвращает возможные значения характеристики предмета Цвет
+     * @param string $locale Язык полей ответа: ru|en|zh
+     * @return ColorsResponse
+     */
+    public function getColors(string $locale = 'ru'): ColorsResponse
+    {
+        $response = $this->request(
+            'GET',
+            $this->getBaseUri() . '/content/v2/directory/colors',
+            [
+                'query' => ['locale' => $locale]
+            ]
+        );
+
+        return ColorsResponse::fromArray($response);
     }
 }
