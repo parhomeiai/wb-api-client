@@ -7,6 +7,7 @@ use Escorp\WbApiClient\Dto\Content\ParentCategoriesResponse;
 use Escorp\WbApiClient\Dto\Content\SubjectsResponse;
 use Escorp\WbApiClient\Dto\Content\SubjectCharcsResponse;
 use Escorp\WbApiClient\Dto\Content\ColorsResponse;
+use Escorp\WbApiClient\Dto\Content\KindsResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
@@ -156,5 +157,23 @@ class ContentApi extends AbstractWbApi
         );
 
         return ColorsResponse::fromArray($response);
+    }
+
+    /**
+     * Метод возвращает возможные значения характеристики предмета Пол
+     * @param string $locale Язык полей ответа: ru|en|zh
+     * @return KindsResponse
+     */
+    public function getKinds(string $locale = 'ru'): KindsResponse
+    {
+        $response = $this->request(
+            'GET',
+            $this->getBaseUri() . '/content/v2/directory/kinds',
+            [
+                'query' => ['locale' => $locale]
+            ]
+        );
+
+        return KindsResponse::fromArray($response);
     }
 }
