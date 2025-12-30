@@ -14,7 +14,9 @@ use Escorp\WbApiClient\Dto\Content\VatResponse;
 use Escorp\WbApiClient\Dto\Content\TnvedResponse;
 use Escorp\WbApiClient\Dto\Content\BrandsResponse;
 use Escorp\WbApiClient\Dto\Content\CardsLimitsResponse;
+use Escorp\WbApiClient\Dto\Content\BarcodesResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
+use InvalidArgumentException;
 
 /**
  * Работа с товарами
@@ -328,6 +330,46 @@ class ContentApi extends AbstractWbApi
             $this->getBaseUri() . '/content/v2/cards/limits'
         );
 
-        return CardsLimitsResponse::fromArray($response);
+        $dto = CardsLimitsResponse::fromArray($response);
+
+        if ($dto->error) {
+            throw new WbApiClientException(
+                'WB error while get cards limits: ' . $dto->errorText . '. ' . $dto->additionalErrors
+            );
+        }
+
+        return $dto;
+    }
+
+    /**
+     * Метод генерирует массив уникальных баркодов для создания размера в карточке товара. Можно использовать, если у вас нет собственных баркодов.
+     * @param int $count Кол-во баркодов которые надо сгенерировать, максимальное доступное количество баркодов для генерации - 5 000
+     * @return BarcodesResponse
+     * @throws InvalidArgumentException
+     * @throws WbApiClientException
+     */
+    public function generateBarcodes(int $count): BarcodesResponse
+    {
+        if ($count < 1 || $count > 5000) {
+            throw new InvalidArgumentException('Count must be between 1 and 5000');
+        }
+
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri() . '/content/v2/barcodes',
+            [
+                'json' => ['count' => $count]
+            ]
+        );
+
+        $dto = BarcodesResponse::fromArray($response);
+
+        if ($dto->error) {
+            throw new WbApiClientException(
+                'WB error while generating barcodes: ' . $dto->errorText . '. ' . $dto->additionalErrors
+            );
+        }
+
+        return $dto;
     }
 }
