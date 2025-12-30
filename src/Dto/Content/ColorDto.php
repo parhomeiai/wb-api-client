@@ -34,8 +34,8 @@ class ColorDto
     public static function fromArray(array $data): self
     {
         return new self(
-            (string)($data['parentName'] ?? ''),
-            (string)($data['name'] ?? '')
+            (string)($data['name'] ?? ''),
+            (string)($data['parentName'] ?? '')
         );
     }
 }

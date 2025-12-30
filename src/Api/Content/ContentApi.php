@@ -8,6 +8,7 @@ use Escorp\WbApiClient\Dto\Content\SubjectsResponse;
 use Escorp\WbApiClient\Dto\Content\SubjectCharcsResponse;
 use Escorp\WbApiClient\Dto\Content\ColorsResponse;
 use Escorp\WbApiClient\Dto\Content\KindsResponse;
+use Escorp\WbApiClient\Dto\Content\CountriesResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
@@ -175,5 +176,23 @@ class ContentApi extends AbstractWbApi
         );
 
         return KindsResponse::fromArray($response);
+    }
+
+    /**
+     * Метод возвращает возможные значения характеристики предмета Страна производства
+     * @param string $locale Язык полей ответа: ru|en|zh
+     * @return CountriesResponse
+     */
+    public function getCountries(string $locale = 'ru'): CountriesResponse
+    {
+        $response = $this->request(
+            'GET',
+            $this->getBaseUri() . '/content/v2/directory/countries',
+            [
+                'query' => ['locale' => $locale]
+            ]
+        );
+
+        return CountriesResponse::fromArray($response);
     }
 }
