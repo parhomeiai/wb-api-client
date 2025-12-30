@@ -13,6 +13,7 @@ use Escorp\WbApiClient\Dto\Content\SeasonsResponse;
 use Escorp\WbApiClient\Dto\Content\VatResponse;
 use Escorp\WbApiClient\Dto\Content\TnvedResponse;
 use Escorp\WbApiClient\Dto\Content\BrandsResponse;
+use Escorp\WbApiClient\Dto\Content\CardsLimitsResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
@@ -314,5 +315,19 @@ class ContentApi extends AbstractWbApi
         } while ($response->next);
 
         return $result;
+    }
+
+    /**
+     * Возвращает бесплатные и платные лимиты продавца на создание карточек товаров
+     * @return CardsLimitsResponse
+     */
+    public function getCardsLimits(): CardsLimitsResponse
+    {
+        $response = $this->request(
+            'GET',
+            $this->getBaseUri() . '/content/v2/cards/limits'
+        );
+
+        return CardsLimitsResponse::fromArray($response);
     }
 }
