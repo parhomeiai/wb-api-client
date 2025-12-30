@@ -13,6 +13,7 @@ use Escorp\WbApiClient\Api\Common\NewsApi;
 use Escorp\WbApiClient\Api\Common\SellerApi;
 use Escorp\WbApiClient\Api\Users\InviteApi;
 use Escorp\WbApiClient\Api\Users\UsersApi;
+use Escorp\WbApiClient\Api\Content\ContentApi;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
 
 use Escorp\WbApiClient\Auth\StaticTokenProvider;
@@ -65,6 +66,7 @@ final class WbApiClientFactory
         $sellerApi = new SellerApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $inviteApi = new InviteApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $usersApi = new UsersApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
+        $contentApi = new ContentApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $pricesApi = new PricesApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
 
         //Root client
@@ -74,6 +76,7 @@ final class WbApiClientFactory
                     $sellerApi,
                     $inviteApi,
                     $usersApi,
+                    $contentApi,
                     $pricesApi
                 );
     }

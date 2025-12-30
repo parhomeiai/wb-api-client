@@ -14,6 +14,7 @@ class ApiHostRegistry implements ApiHostRegistryInterface
         'common'  => 'https://common-api.wildberries.ru',
         'prices'  => 'https://discounts-prices-api.wildberries.ru',
         'users'  => 'https://user-management-api.wildberries.ru',
+        'content'  => 'https://content-api.wildberries.ru',
     ];
 
     /**

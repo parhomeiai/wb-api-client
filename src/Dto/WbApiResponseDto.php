@@ -14,6 +14,7 @@ class WbApiResponseDto
 
     public bool $error;
     public string $errorText;
+    public ?string $additionalErrors;
 
     /**
      *
@@ -21,11 +22,12 @@ class WbApiResponseDto
      * @param bool $error
      * @param string $errorText
      */
-    public function __construct($data, bool $error, string $errorText)
+    public function __construct($data, bool $error, string $errorText, ?string $additionalErrors = null)
     {
         $this->data = $data;
         $this->error = $error;
         $this->errorText = $errorText;
+        $this->additionalErrors = $additionalErrors;
     }
 
     /**
@@ -38,7 +40,8 @@ class WbApiResponseDto
         return new self(
             $response['data'] ?? $response,
             (bool) ($response['error'] ?? false),
-            (string) ($response['errorText'] ?? '')
+            (string) ($response['errorText'] ?? ''),
+             isset($response['additionalErrors']) ? (string)$response['additionalErrors'] : null,
         );
     }
 
