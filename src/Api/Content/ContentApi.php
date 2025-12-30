@@ -5,6 +5,7 @@ namespace Escorp\WbApiClient\Api\Content;
 use Escorp\WbApiClient\Api\AbstractWbApi;
 use Escorp\WbApiClient\Dto\Content\ParentCategoriesResponse;
 use Escorp\WbApiClient\Dto\Content\SubjectsResponse;
+use Escorp\WbApiClient\Dto\Content\SubjectCharcsResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
@@ -25,7 +26,8 @@ class ContentApi extends AbstractWbApi
     }
 
     /**
-     * Получить все родительские категории товаров
+     * Метод возвращает названия и ID всех родительских категорий для создания карточек товаров: например, Электроника, Бытовая химия, Рукоделие.
+     *
      * @param string $locale Язык поля ответа name: ru|en|zh
      * @return ParentCategoriesResponse
      */
@@ -43,7 +45,7 @@ class ContentApi extends AbstractWbApi
     }
 
     /**
-     * Получить предметы
+     * Метод возвращает список названий родительских категорий предметов и их предметов с ID. Например, у категории Игрушки будут предметы Калейдоскопы, Куклы, Мячики.
      *
      * @param array{
      *   locale?: string Язык полей ответа: ru|en|zh,
@@ -115,5 +117,25 @@ class ContentApi extends AbstractWbApi
         } while ($count === $limit);
 
         return $result;
+    }
+
+    /**
+     * Метод возвращает параметры характеристик предмета: названия, типы данных, единицы измерения и так далее. В запросе необходимо указать ID предмета.
+     *
+     * @param int $subjectId ID предмета
+     * @param string $locale Язык полей ответа: ru|en|zh
+     * @return SubjectCharcsResponse
+     */
+    public function getSubjectCharcs(int $subjectId, string $locale = 'ru'): SubjectCharcsResponse
+    {
+        $response = $this->request(
+            'GET',
+            $this->getBaseUri() . '/content/v2/object/charcs/' . $subjectId,
+            [
+                'query' => ['locale' => $locale]
+            ]
+        );
+
+        return SubjectCharcsResponse::fromArray($response);
     }
 }
