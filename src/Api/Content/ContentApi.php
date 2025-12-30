@@ -9,6 +9,7 @@ use Escorp\WbApiClient\Dto\Content\SubjectCharcsResponse;
 use Escorp\WbApiClient\Dto\Content\ColorsResponse;
 use Escorp\WbApiClient\Dto\Content\KindsResponse;
 use Escorp\WbApiClient\Dto\Content\CountriesResponse;
+use Escorp\WbApiClient\Dto\Content\SeasonsResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
@@ -194,5 +195,23 @@ class ContentApi extends AbstractWbApi
         );
 
         return CountriesResponse::fromArray($response);
+    }
+
+    /**
+     * Метод возвращает возможные значения характеристики предмета Сезон.
+     * @param string $locale Язык полей ответа: ru|en|zh
+     * @return SeasonsResponse
+     */
+    public function getSeasons(string $locale = 'ru'): SeasonsResponse
+    {
+        $response = $this->request(
+            'GET',
+            $this->getBaseUri() . '/content/v2/directory/seasons',
+            [
+                'query' => ['locale' => $locale]
+            ]
+        );
+
+        return SeasonsResponse::fromArray($response);
     }
 }
