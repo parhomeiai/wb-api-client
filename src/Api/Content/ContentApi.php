@@ -5,6 +5,7 @@ namespace Escorp\WbApiClient\Api\Content;
 use Escorp\WbApiClient\Api\AbstractWbApi;
 use Escorp\WbApiClient\Dto\Content\ParentCategoriesResponse;
 use Escorp\WbApiClient\Dto\Content\SubjectsResponse;
+use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
  * Работа с товарами
@@ -42,6 +43,7 @@ class ContentApi extends AbstractWbApi
     }
 
     /**
+     * Получить предметы
      *
      * @param array{
      *   locale?: string Язык полей ответа: ru|en|zh,
@@ -71,5 +73,47 @@ class ContentApi extends AbstractWbApi
         );
 
         return SubjectsResponse::fromArray($response);
+    }
+
+    /**
+     * Получить ВСЕ предметы с фильтрами
+     *
+     * @param array{
+     *   locale?: string Язык полей ответа: ru|en|zh,
+     *   name?: string Поиск по названию предмета (Носки), поиск работает по подстроке, искать можно на любом из поддерживаемых языков,
+     *   parentID?: int ID родительской категории предмета
+     * } $filters
+     * @return array
+     * @throws WbApiClientException
+     */
+    public function getAllSubjects(array $filters = []): array
+    {
+        $offset = 0;
+        $limit = 1000;
+        $result = [];
+
+        do {
+            $response = $this->getSubjects(array_merge($filters, [
+                'limit' => $limit,
+                'offset' => $offset,
+            ]));
+
+            if ($response->error) {
+                throw new WbApiClientException(
+                    'WB error while loading subjects (limit: ' . $limit . ', offset: ' . $offset . '): ' . $response->errorText . '. ' . $response->additionalErrors
+                );
+            }
+
+            $count = count($response->subjects);
+            $result = array_merge($result, $response->subjects);
+            $offset += $limit;
+
+            if ($count === $limit) {
+                usleep(600_000);
+            }
+
+        } while ($count === $limit);
+
+        return $result;
     }
 }
