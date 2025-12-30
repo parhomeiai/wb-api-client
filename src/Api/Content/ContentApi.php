@@ -12,6 +12,7 @@ use Escorp\WbApiClient\Dto\Content\CountriesResponse;
 use Escorp\WbApiClient\Dto\Content\SeasonsResponse;
 use Escorp\WbApiClient\Dto\Content\VatResponse;
 use Escorp\WbApiClient\Dto\Content\TnvedResponse;
+use Escorp\WbApiClient\Dto\Content\BrandsResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
@@ -257,5 +258,61 @@ class ContentApi extends AbstractWbApi
         );
 
         return TnvedResponse::fromArray($response);
+    }
+
+    /**
+     * Метод возвращает список брендов по ID предмета.
+     * @param int $subjectID ID предмета
+     * @param int|null $next Параметр пагинации. Используйте значение next из ответа, чтобы получить следующий пакет данных
+     * @return BrandsResponse
+     */
+    public function getBrands(int $subjectID, ?int $next = null): BrandsResponse
+    {
+        $response = $this->request(
+            'GET',
+            $this->getBaseUri() . '/api/content/v1/brands',
+            [
+                'query' => [
+                    'subjectId' => $subjectID,
+                    'next' => $next
+                ]
+            ]
+        );
+
+        return BrandsResponse::fromArray($response);
+    }
+
+
+    /**
+     * Метод возвращает список всех брендов по ID предмета.
+     * @param int $subjectID
+     * @return array
+     * @throws WbApiClientException
+     */
+    public function getAllBrands(int $subjectID): array
+    {
+        $next = 0;
+        $result = [];
+
+        do {
+            $response = $this->getBrands($subjectID, $next);
+
+            if ($response->error) {
+                throw new WbApiClientException(
+                    'WB error while loading Brands (next: ' . $response->errorText . '. ' . $response->additionalErrors
+                );
+            }
+
+            $result = array_merge($result, $response->brands());
+
+            if ($response->next) {
+                sleep(1);
+            }
+
+            $next = $response->next;
+
+        } while ($response->next);
+
+        return $result;
     }
 }
