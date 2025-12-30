@@ -11,6 +11,7 @@ use Escorp\WbApiClient\Dto\Content\KindsResponse;
 use Escorp\WbApiClient\Dto\Content\CountriesResponse;
 use Escorp\WbApiClient\Dto\Content\SeasonsResponse;
 use Escorp\WbApiClient\Dto\Content\VatResponse;
+use Escorp\WbApiClient\Dto\Content\TnvedResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
@@ -232,5 +233,29 @@ class ContentApi extends AbstractWbApi
         );
 
         return VatResponse::fromArray($response);
+    }
+
+    /**
+     * Метод возвращает список ТНВЭД-кодов по ID предмета и фрагменту ТНВЭД-кода.
+     * @param int $subjectID ID предмета
+     * @param int|null $search Поиск по ТНВЭД-коду. Работает только в паре с subjectID
+     * @param string $locale Язык полей ответа: ru|en|zh
+     * @return TnvedResponse
+     */
+    public function getTnved(int $subjectID, ?int $search = null, string $locale = 'ru'): TnvedResponse
+    {
+        $response = $this->request(
+            'GET',
+            $this->getBaseUri() . '/content/v2/directory/tnved',
+            [
+                'query' => [
+                    'subjectID' => $subjectID,
+                    'search' => $search,
+                    'locale' => $locale
+                ]
+            ]
+        );
+
+        return TnvedResponse::fromArray($response);
     }
 }
