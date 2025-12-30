@@ -10,6 +10,7 @@ use Escorp\WbApiClient\Dto\Content\ColorsResponse;
 use Escorp\WbApiClient\Dto\Content\KindsResponse;
 use Escorp\WbApiClient\Dto\Content\CountriesResponse;
 use Escorp\WbApiClient\Dto\Content\SeasonsResponse;
+use Escorp\WbApiClient\Dto\Content\VatResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 
 /**
@@ -213,5 +214,23 @@ class ContentApi extends AbstractWbApi
         );
 
         return SeasonsResponse::fromArray($response);
+    }
+
+    /**
+     * Метод возвращает возможные значения характеристики предмета Ставка НДС.
+     * @param string $locale Язык полей ответа: ru|en|zh
+     * @return VatResponse
+     */
+    public function getVat(string $locale = 'ru'): VatResponse
+    {
+        $response = $this->request(
+            'GET',
+            $this->getBaseUri() . '/content/v2/directory/vat',
+            [
+                'query' => ['locale' => $locale]
+            ]
+        );
+
+        return VatResponse::fromArray($response);
     }
 }
