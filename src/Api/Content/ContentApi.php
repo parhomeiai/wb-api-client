@@ -399,6 +399,11 @@ class ContentApi extends AbstractWbApi
         return CardsListResponse::fromArray($response);
     }
 
+    /**
+     * Метод возвращает список всех созданных карточек товаров.
+     * @param CardsListFilter|null $cardsListFilter
+     * @return array|ProductCardDto[]
+     */
     public function getAllCards(?CardsListFilter $cardsListFilter = null): array
     {
         $cardsCursor = new CardsCursor(100);
