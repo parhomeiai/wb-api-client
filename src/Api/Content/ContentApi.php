@@ -15,6 +15,10 @@ use Escorp\WbApiClient\Dto\Content\TnvedResponse;
 use Escorp\WbApiClient\Dto\Content\BrandsResponse;
 use Escorp\WbApiClient\Dto\Content\CardsLimitsResponse;
 use Escorp\WbApiClient\Dto\Content\BarcodesResponse;
+use Escorp\WbApiClient\Dto\Requests\CardsListRequest;
+use Escorp\WbApiClient\Dto\Content\CardsListFilter;
+use Escorp\WbApiClient\Dto\Content\CardsCursor;
+use Escorp\WbApiClient\Dto\Content\CardsListResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 use InvalidArgumentException;
 
@@ -371,5 +375,55 @@ class ContentApi extends AbstractWbApi
         }
 
         return $dto;
+    }
+
+    /**
+     * Метод возвращает список созданных карточек товаров.
+     * @param CardsListRequest $cardsListRequest
+     * @param string $locale
+     * @return CardsListResponse
+     */
+    public function getCardsList(CardsListRequest $cardsListRequest, string $locale = 'ru'): CardsListResponse
+    {
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri(). '/content/v2/get/cards/list',
+            [
+                'json' => $cardsListRequest->toArray(),
+                'query' => [
+                    'locale' => $locale
+                ]
+            ]
+        );
+
+        return CardsListResponse::fromArray($response);
+    }
+
+    public function getAllCards(?CardsListFilter $cardsListFilter = null): array
+    {
+        $cardsCursor = new CardsCursor(100);
+        $cardsListFilter ??= new CardsListFilter();
+
+        $result = [];
+
+        do{
+            $cardsListRequest = new CardsListRequest($cardsCursor, $cardsListFilter);
+            $cardsListResponse = $this->getCardsList($cardsListRequest);
+
+            foreach ($cardsListResponse->cards as $card) {
+                $result[] = $card;
+            }
+
+            if ($cardsListResponse->cursor->total < $cardsCursor->limit) {
+                break;
+            }
+
+            $cardsCursor->updatedAt = $cardsListResponse->cursor->updatedAt;
+            $cardsCursor->nmID = $cardsListResponse->cursor->nmID;
+
+            usleep(600_000);
+        }while(true);
+
+        return $result;
     }
 }
