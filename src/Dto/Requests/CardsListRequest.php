@@ -30,6 +30,12 @@ class CardsListRequest
      */
     private bool $ascending = false;
 
+    /**
+     *
+     * @param CardsCursor $cursor
+     * @param CardsListFilter $filter
+     * @param bool $ascending
+     */
     function __construct(CardsCursor $cursor, CardsListFilter $filter, bool $ascending = false) {
         $this->cursor = $cursor;
         $this->filter = $filter;

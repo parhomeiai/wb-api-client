@@ -18,7 +18,7 @@ class ApiHostRegistry implements ApiHostRegistryInterface
     ];
 
     /**
-     * Возвращает хост раздела (common, prices)
+     * Возвращает хост раздела (common, prices, users, content)
      *
      * @param string $key
      * @return string

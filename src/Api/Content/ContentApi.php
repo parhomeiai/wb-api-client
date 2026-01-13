@@ -19,6 +19,9 @@ use Escorp\WbApiClient\Dto\Requests\CardsListRequest;
 use Escorp\WbApiClient\Dto\Content\CardsListFilter;
 use Escorp\WbApiClient\Dto\Content\CardsCursor;
 use Escorp\WbApiClient\Dto\Content\CardsListResponse;
+use Escorp\WbApiClient\Dto\Content\CardsErrorListResponse;
+use Escorp\WbApiClient\Dto\Requests\CardsErrorListRequest;
+use Escorp\WbApiClient\Dto\Content\CardsErrorCursor;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 use InvalidArgumentException;
 
@@ -404,7 +407,7 @@ class ContentApi extends AbstractWbApi
      * @param CardsListFilter|null $cardsListFilter
      * @return array|ProductCardDto[]
      */
-    public function getAllCards(?CardsListFilter $cardsListFilter = null): array
+    public function getAllCards(?CardsListFilter $cardsListFilter = null, string $locale = 'ru'): array
     {
         $cardsCursor = new CardsCursor(100);
         $cardsListFilter ??= new CardsListFilter();
@@ -413,7 +416,7 @@ class ContentApi extends AbstractWbApi
 
         do{
             $cardsListRequest = new CardsListRequest($cardsCursor, $cardsListFilter);
-            $cardsListResponse = $this->getCardsList($cardsListRequest);
+            $cardsListResponse = $this->getCardsList($cardsListRequest, $locale);
 
             foreach ($cardsListResponse->cards as $card) {
                 $result[] = $card;
@@ -427,6 +430,60 @@ class ContentApi extends AbstractWbApi
             $cardsCursor->nmID = $cardsListResponse->cursor->nmID;
 
             usleep(600_000);
+        }while(true);
+
+        return $result;
+    }
+
+    /**
+     * Возвращает Список несозданных карточек товаров с ошибками
+     * @param CardsErrorListRequest $cardsErrorListRequest
+     * @param string $locale
+     * @return CardsErrorListResponse
+     */
+    public function getCardsErrorList(CardsErrorListRequest $cardsErrorListRequest, string $locale = 'ru'): CardsErrorListResponse
+    {
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri(). '/content/v2/cards/error/list',
+            [
+                'json' => $cardsErrorListRequest->toArray(),
+                'query' => [
+                    'locale' => $locale
+                ]
+            ]
+        );
+
+        return CardsErrorListResponse::fromArray($response);
+    }
+
+    /**
+     * Возвращает весь Список несозданных карточек товаров с ошибками
+     * @param string $locale
+     * @return array|ErrorItemDto[]
+     */
+    public function getAllCardsError(string $locale = 'ru'): array
+    {
+        $cardsCursor = new CardsErrorCursor(100);
+
+        $result = [];
+
+        do{
+            $cardsErrorListRequest = new CardsErrorListRequest($cardsCursor);
+            $cardsErrorListResponse = $this->getCardsErrorList($cardsErrorListRequest, $locale);
+
+            foreach ($cardsErrorListResponse->items as $item) {
+                $result[] = $item;
+            }
+
+            if (!$cardsErrorListResponse->cursor->next) {
+                break;
+            }
+
+            $cardsCursor->updatedAt = $cardsErrorListResponse->cursor->updatedAt;
+            $cardsCursor->batchUUID = $cardsErrorListResponse->cursor->batchUUID;
+
+            sleep(1);
         }while(true);
 
         return $result;
