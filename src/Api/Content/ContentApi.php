@@ -488,4 +488,61 @@ class ContentApi extends AbstractWbApi
 
         return $result;
     }
+
+    /**
+     * возвращает Список карточек товаров в корзине
+     * @param CardsListRequest $cardsListRequest
+     * @param string $locale
+     * @return CardsListResponse
+     */
+    public function getCardsTrash(CardsListRequest $cardsListRequest, string $locale = 'ru'): CardsListResponse
+    {
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri(). '/content/v2/get/cards/trash',
+            [
+                'json' => $cardsListRequest->toArray(),
+                'query' => [
+                    'locale' => $locale
+                ]
+            ]
+        );
+
+        return CardsListResponse::fromArray($response);
+
+    }
+
+    /**
+     * Возвращает весь Список карточек товаров в корзине
+     * @param CardsListFilter|null $cardsListFilter
+     * @param string $locale
+     * @return array|ProductCardDto[]
+     */
+    public function getAllCardsTrash(?CardsListFilter $cardsListFilter = null, string $locale = 'ru'): array
+    {
+        $cardsCursor = new CardsCursor(100);
+        $cardsListFilter ??= new CardsListFilter();
+
+        $result = [];
+
+        do{
+            $cardsListRequest = new CardsListRequest($cardsCursor, $cardsListFilter);
+            $cardsListResponse = $this->getCardsTrash($cardsListRequest, $locale);
+
+            foreach ($cardsListResponse->cards as $card) {
+                $result[] = $card;
+            }
+
+            if ($cardsListResponse->cursor->total < $cardsCursor->limit) {
+                break;
+            }
+
+            $cardsCursor->trashedAt = $cardsListResponse->cursor->trashedAt;
+            $cardsCursor->nmID = $cardsListResponse->cursor->nmID;
+
+            usleep(600_000);
+        }while(true);
+
+        return $result;
+    }
 }

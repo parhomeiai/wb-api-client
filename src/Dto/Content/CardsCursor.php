@@ -23,6 +23,12 @@ class CardsCursor
     public ?string $updatedAt = null;
 
     /**
+     * Дата и время помещения в корзину
+     * @var string|null
+     */
+    public ?string $trashedAt = null;
+
+    /**
      * Артикул WB, с которого надо запрашивать следующий список карточек товаров
      * @var int|null
      */
@@ -41,10 +47,11 @@ class CardsCursor
      * @param int|null $nmID
      * @param int|null $total
      */
-    function __construct(int $limit = 100, ?string $updatedAt = null, ?int $nmID = null, ?int $total = null)
+    function __construct(int $limit = 100, ?string $updatedAt = null, ?int $nmID = null, ?int $total = null, ?string $trashedAt = null)
     {
         $this->limit = $limit;
         $this->updatedAt = $updatedAt;
+        $this->trashedAt = $trashedAt;
         $this->nmID = $nmID;
         $this->total = $total;
     }
@@ -58,9 +65,10 @@ class CardsCursor
     {
         return new self(
             (int)($data['limit'] ?? 100),
-            (string)($data['updatedAt'] ?? ''),
+            ($data['updatedAt'] ?? null),
             (int)($data['nmID'] ?? 0),
             (int)($data['total'] ?? 0),
+            ($data['trashedAt'] ?? null),
         );
     }
 
@@ -73,6 +81,7 @@ class CardsCursor
         return array_filter([
             'limit' => $this->limit,
             'updatedAt' => $this->updatedAt,
+            'trashedAt' => $this->trashedAt,
             'nmID' => $this->nmID,
         ], fn($v) => $v !== null);
     }

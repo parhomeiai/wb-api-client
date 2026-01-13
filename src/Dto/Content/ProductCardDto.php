@@ -125,11 +125,17 @@ class ProductCardDto
 
     /**
      * Дата и время изменения
-     * @var string
+     * @var string|null
      */
-    public string $updatedAt;
+    public ?string $updatedAt;
 
-    function __construct(int $nmID, int $imtID, string $nmUUID, int $subjectID, string $subjectName, string $vendorCode, string $brand, string $title, string $description, bool $needKiz, array $photos, string $video, ProductWholesaleDto $whosale, ProductDimensionsDto $dimensions, array $characteristics, array $sizes, array $tags, string $createdAt, string $updatedAt)
+    /**
+     * Дата и время помещения в корзину
+     * @var string|null
+     */
+    public ?string $trashedAt;
+
+    function __construct(int $nmID, int $imtID, string $nmUUID, int $subjectID, string $subjectName, string $vendorCode, string $brand, string $title, string $description, bool $needKiz, array $photos, string $video, ProductWholesaleDto $whosale, ProductDimensionsDto $dimensions, array $characteristics, array $sizes, array $tags, string $createdAt, ?string $updatedAt = null, ?string $trashedAt = null)
     {
         foreach ($photos as $p) {
             if (!$p instanceof ProductPhotoDto) {
@@ -171,6 +177,7 @@ class ProductCardDto
         $this->tags = $tags;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
+        $this->trashedAt = $trashedAt;
     }
 
     /**
@@ -219,7 +226,8 @@ class ProductCardDto
             $sizes,
             $tags,
             (string)($data['createdAt'] ?? ''),
-            (string)($data['updatedAt'] ?? ''),
+            ($data['updatedAt'] ?? null),
+            ($data['trashedAt'] ?? null),
         );
 
         $product->data = $data;

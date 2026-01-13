@@ -12,7 +12,7 @@ use Escorp\WbApiClient\Dto\WbApiResponseDto;
  */
 class CardsListResponse extends WbApiResponseDto
 {
-    public array $cards;
+    public array $cards = [];
     public CardsCursor $cursor;
 
     public static function fromArray(array $response): self
