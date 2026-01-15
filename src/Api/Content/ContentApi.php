@@ -22,6 +22,7 @@ use Escorp\WbApiClient\Dto\Content\CardsListResponse;
 use Escorp\WbApiClient\Dto\Content\CardsErrorListResponse;
 use Escorp\WbApiClient\Dto\Requests\CardsErrorListRequest;
 use Escorp\WbApiClient\Dto\Content\CardsErrorCursor;
+use Escorp\WbApiClient\Dto\WbApiResponseDto;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 use InvalidArgumentException;
 
@@ -544,5 +545,33 @@ class ContentApi extends AbstractWbApi
         }while(true);
 
         return $result;
+    }
+
+    /**
+     * Перенос карточек товаров в корзину
+     * @param array $nmIDs
+     * @return WbApiResponseDto
+     * @throws InvalidArgumentException
+     */
+    public function cardsDeleteTrash(array $nmIDs): WbApiResponseDto
+    {
+        if (count($nmIDs) > 1000) {
+            throw new InvalidArgumentException('nmIDs must be an array of no more than 1000 elements');
+        }
+
+        foreach ($nmIDs as &$value) {
+            $value = (int) $value;
+        }
+        unset($value);
+
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri(). '/content/v2/cards/delete/trash',
+            [
+                'json' => ['nmIDs' => $nmIDs],
+            ]
+        );
+
+        return WbApiResponseDto::fromArray($response);
     }
 }
