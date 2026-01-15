@@ -574,4 +574,32 @@ class ContentApi extends AbstractWbApi
 
         return WbApiResponseDto::fromArray($response);
     }
+
+    /**
+     * Восстановление карточек товаров из корзины
+     * @param array $nmIDs
+     * @return WbApiResponseDto
+     * @throws InvalidArgumentException
+     */
+    public function cardsRecover(array $nmIDs): WbApiResponseDto
+    {
+        if (count($nmIDs) > 1000) {
+            throw new InvalidArgumentException('nmIDs must be an array of no more than 1000 elements');
+        }
+
+        foreach ($nmIDs as &$value) {
+            $value = (int) $value;
+        }
+        unset($value);
+
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri(). '/content/v2/cards/recover',
+            [
+                'json' => ['nmIDs' => $nmIDs],
+            ]
+        );
+
+        return WbApiResponseDto::fromArray($response);
+    }
 }
