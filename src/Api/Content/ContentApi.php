@@ -23,6 +23,7 @@ use Escorp\WbApiClient\Dto\Content\CardsErrorListResponse;
 use Escorp\WbApiClient\Dto\Requests\CardsErrorListRequest;
 use Escorp\WbApiClient\Dto\Content\CardsErrorCursor;
 use Escorp\WbApiClient\Dto\WbApiResponseDto;
+use Escorp\WbApiClient\Dto\Content\ProductCardUploadDto;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 use InvalidArgumentException;
 
@@ -597,6 +598,40 @@ class ContentApi extends AbstractWbApi
             $this->getBaseUri(). '/content/v2/cards/recover',
             [
                 'json' => ['nmIDs' => $nmIDs],
+            ]
+        );
+
+        return WbApiResponseDto::fromArray($response);
+    }
+
+    /**
+     *
+     * @param int $subjectID
+     * @param array $variants
+     * @return WbApiResponseDto
+     */
+    public function cardsUpload(int $subjectID, array $variants): WbApiResponseDto
+    {
+        if(empty($variants)){
+            throw new InvalidArgumentException('variants must not be an empty array');
+        }
+
+        foreach ($variants as $v) {
+            if (!$v instanceof ProductCardUploadDto) {
+                throw new InvalidArgumentException('variants must contain ProductCardUploadDto');
+            }
+        }
+
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri(). '/content/v2/cards/upload',
+            [
+                'json' => [
+                    [
+                        'subjectID' => $subjectID,
+                        'variants' =>array_map(function(ProductCardUploadDto $variant){return $variant->toArray();}, $variants)
+                    ]
+                ],
             ]
         );
 

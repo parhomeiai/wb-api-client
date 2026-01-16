@@ -17,7 +17,7 @@ class ProductCardDto
      * Артикул WB
      * @var int
      */
-    public int $nmID;
+    public ?int $nmID;
 
     /**
      * ID объединённой карточки товара.
@@ -25,25 +25,25 @@ class ProductCardDto
      * Есть у карточки товара, даже если она не объединена ни с одной другой карточкой
      * @var int
      */
-    public int $imtID;
+    public ?int $imtID;
 
     /**
      * Внутренний технический ID карточки товара
      * @var string
      */
-    public string $nmUUID;
+    public ?string $nmUUID;
 
     /**
      * ID предмета
      * @var int
      */
-    public int $subjectID;
+    public ?int $subjectID;
 
     /**
      * Название предмета
      * @var string
      */
-    public string $subjectName;
+    public ?string $subjectName;
 
     /**
      * Артикул продавца
@@ -55,19 +55,19 @@ class ProductCardDto
      * Бренд
      * @var string
      */
-    public string $brand;
+    public ?string $brand;
 
     /**
      * Наименование товара
      * @var string
      */
-    public string $title;
+    public ?string $title;
 
     /**
      * Описание товара
      * @var string
      */
-    public string $description;
+    public ?string $description;
 
     /**
      * Требуется ли код маркировки для этого товара
@@ -85,19 +85,19 @@ class ProductCardDto
      * URL видео
      * @var string
      */
-    public string $video;
+    public ?string $video;
 
     /**
      * Оптовая продажа
      * @var ProductWholesale
      */
-    public ProductWholesaleDto $whosale;
+    public ?ProductWholesaleDto $whosale;
 
     /**
      * Габариты и вес товара c упаковкой, см и кг
      * @var ProductDimensions
      */
-    public ProductDimensionsDto $dimensions;
+    public ?ProductDimensionsDto $dimensions;
 
     /**
      * Характеристики
@@ -121,7 +121,7 @@ class ProductCardDto
      * Дата и время создания
      * @var string
      */
-    public string $createdAt;
+    public ?string $createdAt;
 
     /**
      * Дата и время изменения

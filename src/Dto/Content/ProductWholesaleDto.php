@@ -48,4 +48,11 @@ class ProductWholesaleDto
         );
     }
 
+    public function toArray(): array
+    {
+        return array_filter([
+            'enabled' => $this->enabled,
+            'quantum' => $this->quantum,
+        ], fn($v) => $v !== null);
+    }
 }

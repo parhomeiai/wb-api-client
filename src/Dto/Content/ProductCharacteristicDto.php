@@ -56,4 +56,11 @@ class ProductCharacteristicDto
         );
     }
 
+    public function toArray(): array
+    {
+        return array_filter([
+            'id' => $this->id,
+            'value' => $this->value,
+        ], fn($v) => $v !== null);
+    }
 }

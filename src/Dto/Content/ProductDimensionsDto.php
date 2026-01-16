@@ -77,4 +77,13 @@ class ProductDimensionsDto
         );
     }
 
+    public function toArray(): array
+    {
+        return array_filter([
+            'length' => $this->length,
+            'width' => $this->width,
+            'height' => $this->height,
+            'weightBrutto' => $this->weightBrutto,
+        ], fn($v) => $v !== null);
+    }
 }

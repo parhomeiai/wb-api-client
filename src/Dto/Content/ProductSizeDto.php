@@ -28,17 +28,31 @@ class ProductSizeDto
     public string $wbSize;
 
     /**
+     * Цена товара
+     * @var int|null
+     */
+    public ?int $price;
+
+    /**
      * Баркод товара
      * @var array|string[]
      */
     public array $skus = [];
 
-
-    function __construct(int $chrtID, string $techSize, string $wbSize, array $skus = [])
+    /**
+     *
+     * @param int $chrtID
+     * @param string $techSize
+     * @param string $wbSize
+     * @param int $price
+     * @param array $skus
+     */
+    function __construct(int $chrtID, string $techSize, string $wbSize, ?int $price, array $skus = [])
     {
         $this->chrtID = $chrtID;
         $this->techSize = $techSize;
         $this->wbSize = $wbSize;
+        $this->price = $price;
         $this->skus = $skus;
     }
 
@@ -57,9 +71,19 @@ class ProductSizeDto
         return new self(
             (int)($data['chrtID'] ?? 0),
             (string)($data['techSize'] ?? ''),
-            (string)($data['$wbSize'] ?? ''),
+            (string)($data['wbSize'] ?? ''),
+            isset($data['price']) ? ((int)$data['price']) : null,
             $skus
         );
     }
 
+    public function toArray(): array
+    {
+        return array_filter([
+            'techSize' => $this->techSize,
+            'wbSize' => $this->wbSize,
+            'price' => $this->price,
+            'skus' => $this->skus,
+        ], fn($v) => $v !== null);
+    }
 }
