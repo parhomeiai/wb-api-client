@@ -80,6 +80,7 @@ class ProductSizeDto
     public function toArray(): array
     {
         return array_filter([
+            'chrtID' => $this->chrtID,
             'techSize' => $this->techSize,
             'wbSize' => $this->wbSize,
             'price' => $this->price,

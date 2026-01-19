@@ -24,6 +24,7 @@ use Escorp\WbApiClient\Dto\Requests\CardsErrorListRequest;
 use Escorp\WbApiClient\Dto\Content\CardsErrorCursor;
 use Escorp\WbApiClient\Dto\WbApiResponseDto;
 use Escorp\WbApiClient\Dto\Content\ProductCardUploadDto;
+use Escorp\WbApiClient\Dto\Content\ProductCardUpdateDto;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 use InvalidArgumentException;
 
@@ -605,9 +606,9 @@ class ContentApi extends AbstractWbApi
     }
 
     /**
-     *
+     * Создание карточек товаров
      * @param int $subjectID
-     * @param array $variants
+     * @param array|ProductCardUploadDto[] $variants - варианты товара
      * @return WbApiResponseDto
      */
     public function cardsUpload(int $subjectID, array $variants): WbApiResponseDto
@@ -632,6 +633,90 @@ class ContentApi extends AbstractWbApi
                         'variants' =>array_map(function(ProductCardUploadDto $variant){return $variant->toArray();}, $variants)
                     ]
                 ],
+            ]
+        );
+
+        return WbApiResponseDto::fromArray($response);
+    }
+
+    /**
+     * Создание карточек товаров с присоединением
+     * @param int $imtId - imtID карточки товара, к которой присоединяется карточка товара
+     * @param array $cardsToAdd - карточки присоединяемых товаров
+     * @return WbApiResponseDto
+     * @throws InvalidArgumentException
+     */
+    public function catdsUploadAdd(int $imtId, array $cardsToAdd): WbApiResponseDto
+    {
+        if(empty($cardsToAdd)){
+            throw new InvalidArgumentException('variants must not be an empty array');
+        }
+
+        foreach ($cardsToAdd as $c) {
+            if (!$c instanceof ProductCardUploadDto) {
+                throw new InvalidArgumentException('variants must contain ProductCardUploadDto');
+            }
+        }
+
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri(). '/content/v2/cards/upload/add',
+            [
+                'json' => [
+                    'imtID' => $imtId,
+                    'cardsToAdd' =>array_map(function(ProductCardUploadDto $variant){return $variant->toArray();}, $cardsToAdd)
+                ],
+            ]
+        );
+
+        return WbApiResponseDto::fromArray($response);
+    }
+
+    /**
+     * Редактирование карточек товаров
+     *
+     * @param array $cards
+     * @return WbApiResponseDto
+     * @throws InvalidArgumentException
+     */
+    public function cardsUpdate(array $cards): WbApiResponseDto
+    {
+        foreach ($cards as $c) {
+            if (!$c instanceof ProductCardUpdateDto) {
+                throw new InvalidArgumentException('variants must contain ProductCardUpdateDto');
+            }
+        }
+
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri(). '/content/v2/cards/update',
+            [
+                'json' => array_map(function(ProductCardUpdateDto $card){return $card->toArray();}, $cards),
+            ]
+        );
+
+        return WbApiResponseDto::fromArray($response);
+    }
+
+    /**
+     * Объединение и разъединение карточек товаров
+     * @param array int[] $nmIDs - nmID, которые необходимо объединить
+     * @param int|null $targetIMT - Существующий у продавца imtID, под которым необходимо объединить карточки товаров. Если не указан, то будет разъединение
+     * @return WbApiResponseDto
+     */
+    public function cardsMoveNm(array $nmIDs, ?int $targetIMT = null): WbApiResponseDto
+    {
+        $data = ['nmIDs' => $nmIDs];
+
+        if($targetIMT){
+            $data['targetIMT'] = $targetIMT;
+        }
+
+        $response = $this->request(
+            'POST',
+            $this->getBaseUri(). '/content/v2/cards/moveNm',
+            [
+                'json' => $data,
             ]
         );
 

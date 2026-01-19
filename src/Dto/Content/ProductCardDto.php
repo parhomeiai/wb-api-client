@@ -234,4 +234,13 @@ class ProductCardDto
 
         return $product;
     }
+
+    /**
+     * Возвращает карточку для редактирования
+     * @return ProductCardUpdateDto
+     */
+    public function toProductCardUpdate(): ProductCardUpdateDto
+    {
+        return new ProductCardUpdateDto($this->nmID, $this->vendorCode, $this->sizes, $this->brand, $this->title, $this->description, $this->dimensions, $this->characteristics);
+    }
 }
