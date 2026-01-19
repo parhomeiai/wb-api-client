@@ -646,7 +646,7 @@ class ContentApi extends AbstractWbApi
      * @return WbApiResponseDto
      * @throws InvalidArgumentException
      */
-    public function catdsUploadAdd(int $imtId, array $cardsToAdd): WbApiResponseDto
+    public function cardsUploadAdd(int $imtId, array $cardsToAdd): WbApiResponseDto
     {
         if(empty($cardsToAdd)){
             throw new InvalidArgumentException('variants must not be an empty array');
