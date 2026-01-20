@@ -35,6 +35,20 @@ use InvalidArgumentException;
  */
 class ContentApi extends AbstractWbApi
 {
+
+    /**
+     *
+     * @var MediaFilesApi|null
+     */
+    private ?MediaFilesApi $mediaFilesApi = null;
+
+    private function init()
+    {
+        if($this->mediaFilesApi === null){
+            $this->mediaFilesApi = new MediaFilesApi($this->http, $this->token, $this->hosts);
+        }
+    }
+
     /**
      * Возвращает домен
      *
@@ -43,6 +57,12 @@ class ContentApi extends AbstractWbApi
     private function getBaseUri(): string
     {
         return $this->hosts->get('content');
+    }
+
+    public function mediaFilesApi(): MediaFilesApi
+    {
+        $this->init();
+        return $this->mediaFilesApi;
     }
 
     /**
@@ -721,5 +741,30 @@ class ContentApi extends AbstractWbApi
         );
 
         return WbApiResponseDto::fromArray($response);
+    }
+
+    /**
+     * Загрузить медиафайл
+     *
+     * @param string $XNmId - Артикул WB
+     * @param int $XPhotoNumber - Номер медиафайла на загрузку, начинается с 1. При загрузке видео всегда указывайте 1. Чтобы добавить изображение к уже загруженным, номер медиафайла должен быть больше количества уже загруженных медиафайлов.
+     * @param string $file - содержимое файла
+     * @return WbApiResponseDto
+     */
+    public function mediaFile(string $XNmId, int $XPhotoNumber, string $file): WbApiResponseDto
+    {
+        return $this->mediaFilesApi()->mediaFile($XNmId, $XPhotoNumber, $file);
+    }
+
+    /**
+     * Загрузить медиафайлы по ссылкам
+     *
+     * @param int $nmId - Артикул WB
+     * @param array string[] $data - Ссылки на изображения в том порядке, в котором они будут в карточке товара, и на видео, на любой позиции массива
+     * @return WbApiResponseDto
+     */
+    public function mediaSave(int $nmId, array $data): WbApiResponseDto
+    {
+        return $this->mediaFilesApi()->mediaSave($nmId, $data);
     }
 }

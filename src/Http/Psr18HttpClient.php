@@ -69,7 +69,7 @@ final class Psr18HttpClient implements HttpClientInterface
      */
     public function requestRaw(string $method, string $url, array $options = []): ResponseInterface
     {
-        $bodyOptions = array_intersect(['json', 'form_params', 'body'], array_keys($options));
+        $bodyOptions = array_intersect(['json', 'form_params', 'body', 'multipart'], array_keys($options));
         if (count($bodyOptions) > 1) {
             throw new InvalidArgumentException('Only one of json, form_params or body is allowed');
         }
@@ -112,6 +112,36 @@ final class Psr18HttpClient implements HttpClientInterface
             if (array_key_exists('body', $options)) {
                 $stream = $this->streamFactory->createStream((string) $options['body']);
                 $request = $request->withBody($stream);
+            }
+
+            // ---------- MULTIPART ----------
+            if (array_key_exists('multipart', $options)) {
+                $boundary = bin2hex(random_bytes(16));
+                $streamContent = '';
+
+                foreach ($options['multipart'] as $part) {
+                    $name = $part['name'];
+                    $contents = $part['contents'];
+                    $filename = $part['filename'] ?? null;
+                    $headers = $part['headers'] ?? [];
+
+                    $streamContent .= "--{$boundary}\r\n";
+                    $streamContent .= "Content-Disposition: form-data; name=\"{$name}\"";
+                    if ($filename) {
+                        $streamContent .= "; filename=\"{$filename}\"";
+                    }
+                    $streamContent .= "\r\n";
+
+                    foreach ($headers as $key => $value) {
+                        $streamContent .= "{$key}: {$value}\r\n";
+                    }
+                    $streamContent .= "\r\n{$contents}\r\n";
+                }
+                $streamContent .= "--{$boundary}--\r\n";
+
+                $request = $request
+                    ->withHeader('Content-Type', 'multipart/form-data; boundary=' . $boundary)
+                    ->withBody($this->streamFactory->createStream($streamContent));
             }
 
             $response = $this->client->sendRequest($request);
