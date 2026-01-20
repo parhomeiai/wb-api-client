@@ -25,6 +25,7 @@ use Escorp\WbApiClient\Dto\Content\CardsErrorCursor;
 use Escorp\WbApiClient\Dto\WbApiResponseDto;
 use Escorp\WbApiClient\Dto\Content\ProductCardUploadDto;
 use Escorp\WbApiClient\Dto\Content\ProductCardUpdateDto;
+use Escorp\WbApiClient\Dto\Content\TagsResponse;
 use Escorp\WbApiClient\Exceptions\WbApiClientException;
 use InvalidArgumentException;
 
@@ -42,10 +43,19 @@ class ContentApi extends AbstractWbApi
      */
     private ?MediaFilesApi $mediaFilesApi = null;
 
+    /**
+     *
+     * @var TagsApi|null
+     */
+    private ?TagsApi $tagsApi = null;
+
     private function init()
     {
         if($this->mediaFilesApi === null){
             $this->mediaFilesApi = new MediaFilesApi($this->http, $this->token, $this->hosts);
+        }
+        if($this->tagsApi === null){
+            $this->tagsApi = new TagsApi($this->http, $this->token, $this->hosts);
         }
     }
 
@@ -59,10 +69,24 @@ class ContentApi extends AbstractWbApi
         return $this->hosts->get('content');
     }
 
+    /**
+     * Работа с медиафалами
+     * @return MediaFilesApi
+     */
     public function mediaFilesApi(): MediaFilesApi
     {
         $this->init();
         return $this->mediaFilesApi;
+    }
+
+    /**
+     * Работа с ярлыками
+     * @return TagsApi
+     */
+    public function tagsApi(): TagsApi
+    {
+        $this->init();
+        return $this->tagsApi;
     }
 
     /**
@@ -744,6 +768,10 @@ class ContentApi extends AbstractWbApi
     }
 
     /**
+     * Медиафайлы
+     */
+
+    /**
      * Загрузить медиафайл
      *
      * @param string $XNmId - Артикул WB
@@ -766,5 +794,29 @@ class ContentApi extends AbstractWbApi
     public function mediaSave(int $nmId, array $data): WbApiResponseDto
     {
         return $this->mediaFilesApi()->mediaSave($nmId, $data);
+    }
+
+    /**
+     * Ярлыки
+     */
+
+    /**
+     * Метод возвращает список и характеристики всех ярлыков продавца для группировки и фильтрации товаров.
+     * @return TagsResponse
+     */
+    public function tags(): TagsResponse
+    {
+        return $this->tagsApi()->tags();
+    }
+
+    /**
+     * Создание ярлыка
+     * @param string $name
+     * @param string $color - Цвет ярлыка. Доступные цвета: D1CFD7 — серый, FEE0E0 — красный, ECDAFF — фиолетовый, E4EAFF — синий, DEF1DD — зеленый, FFECC7 — желтый
+     * @return WbApiResponseDto
+     */
+    public function tagCreate(string $name, string $color): WbApiResponseDto
+    {
+        return $this->tagsApi()->tagCreate($name, $color);
     }
 }
