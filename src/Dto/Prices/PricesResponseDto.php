@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Escorp\WbApiClient\Dto;
+namespace Escorp\WbApiClient\Dto\Prices;
+
+use Escorp\WbApiClient\Dto\WbApiResponseDto;
 
 final class PricesResponseDto extends WbApiResponseDto
 {

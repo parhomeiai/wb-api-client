@@ -1,6 +1,6 @@
 <?php
 
-namespace Escorp\WbApiClient\Dto;
+namespace Escorp\WbApiClient\Dto\Prices;
 
 /**
  * Description of PricesBatchResponseDto
