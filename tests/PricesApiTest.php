@@ -50,7 +50,7 @@ class PricesApiTest extends TestCase
 
         $api = new PricesApi($client, new StaticTokenProvider('fake-token'), new ApiHostRegistry());
 
-        $response = $api->getPricesBatch([173901872]);
+        $response = $api->getPricesByNmidsBatch([173901872]);
 
         $this->assertFalse($response->hasErrors());
         $this->assertCount(1, $response->prices);
@@ -75,7 +75,7 @@ class PricesApiTest extends TestCase
 
         $api = new PricesApi($client, new StaticTokenProvider('bade-token'), new ApiHostRegistry());
 
-        $response = $api->getPricesBatch([1]);
+        $response = $api->getPricesByNmidsBatch([1]);
 
         $this->assertTrue($response->hasErrors());
         $this->assertCount(1, $response->getErrors());
@@ -107,7 +107,7 @@ class PricesApiTest extends TestCase
         ]);
 
         $api = new PricesApi($client, new StaticTokenProvider('fake-token'), new ApiHostRegistry());
-        $api->getPricesBatch([1]);
+        $api->getPricesByNmidsBatch([1]);
     }
 
     public function test_it_throws_exception_on_invalid_nmids(): void
@@ -115,7 +115,7 @@ class PricesApiTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $api = new PricesApi(new FakeHttpClient(), new StaticTokenProvider('fake-token'), new ApiHostRegistry());
-        $api->getPrices(['abc']);
+        $api->getPricesByNmids(['abc']);
     }
 
 /*

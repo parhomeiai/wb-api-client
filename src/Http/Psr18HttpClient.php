@@ -65,7 +65,10 @@ final class Psr18HttpClient implements HttpClientInterface
      * @param string $url
      * @param array $options
      * @return ResponseInterface
+     * @throws InvalidArgumentException
+     * @throws WbHttpException
      * @throws type
+     * @throws WbApiClientException
      */
     public function requestRaw(string $method, string $url, array $options = []): ResponseInterface
     {

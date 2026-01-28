@@ -19,11 +19,12 @@ final class FakeHttpClient implements HttpClientInterface
         $this->queue[] = $response;
     }
 
-    public function request(string $method, string $url, array $options = array()): array {
+    public function request(string $method, string $url, array $options = []): array
+    {
         return array_shift($this->queue);
     }
 
-    public function requestRaw(string $method, string $url, array $options = array()): ResponseInterface
+    public function requestRaw(string $method, string $url, array $options = []): ResponseInterface
     {
         throw new \LogicException('Not implemented in Fake');
     }
