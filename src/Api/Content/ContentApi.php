@@ -49,6 +49,12 @@ class ContentApi extends AbstractWbApi
      */
     private ?TagsApi $tagsApi = null;
 
+    /**
+     *
+     * @var WarehousesApi|null
+     */
+    private ?WarehousesApi $warehousesApi = null;
+
     private function init()
     {
         if($this->mediaFilesApi === null){
@@ -56,6 +62,9 @@ class ContentApi extends AbstractWbApi
         }
         if($this->tagsApi === null){
             $this->tagsApi = new TagsApi($this->http, $this->token, $this->hosts);
+        }
+        if($this->warehousesApi === null){
+            $this->warehousesApi = new WarehousesApi($this->http, $this->token, $this->hosts);
         }
     }
 
@@ -87,6 +96,16 @@ class ContentApi extends AbstractWbApi
     {
         $this->init();
         return $this->tagsApi;
+    }
+
+    /**
+     * Склады продавца
+     * @return WarehousesApi
+     */
+    public function warehousesApi(): WarehousesApi
+    {
+        $this->init();
+        return $this->warehousesApi;
     }
 
     /**

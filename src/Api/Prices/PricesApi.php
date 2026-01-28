@@ -13,7 +13,6 @@ use Escorp\WbApiClient\Dto\Prices\UploadPricesResponseDto;
 use Escorp\WbApiClient\Dto\Prices\UploadPricesBatchResponseDto;
 use Escorp\WbApiClient\Dto\Prices\HistoryTaskResponseDto;
 use Escorp\WbApiClient\Dto\ResponseErrorDto;
-use Escorp\WbApiClient\Dto\WbApiResponseDto;
 use InvalidArgumentException;
 
 final class PricesApi extends AbstractWbApi
@@ -479,7 +478,7 @@ final class PricesApi extends AbstractWbApi
 
     /**
      * Возвращает информацию о товарах в карантине
-     * 
+     *
      * @param int $limit
      * @param int $offset
      * @return QuarantineGoodsResponseDto
