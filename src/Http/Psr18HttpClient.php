@@ -150,12 +150,13 @@ final class Psr18HttpClient implements HttpClientInterface
             $response = $this->client->sendRequest($request);
 
             $status = $response->getStatusCode();
+
             if ($status < 200 || $status >= 300) {
                 $body = (string) $response->getBody();
                 $data = json_decode($body, true);
 
                 if (json_last_error() === JSON_ERROR_NONE && !empty($data)) {
-                    throw new WbHttpException(WbErrorDto::fromArray($data));
+                    throw new WbHttpException(WbErrorDto::fromArray($data), $status);
                 }
 
                 throw new WbApiClientException(

@@ -11,6 +11,8 @@ use Escorp\WbApiClient\Dto\WbErrorDto;
  */
 class WbHttpException extends WbApiClientException
 {
+    private $httpStatus;
+
     /**
      * DTO ошибки WB
      * @var WbErrorDto
@@ -21,10 +23,11 @@ class WbHttpException extends WbApiClientException
      *
      * @param WbErrorDto $error
      */
-    public function __construct(WbErrorDto $error)
+    public function __construct(WbErrorDto $error, $httpStatus = null)
     {
         parent::__construct($error->title . ': ' . $error->detail, $error->status);
         $this->error = $error;
+        $this->httpStatus = $httpStatus;
     }
 
     /**
@@ -34,5 +37,10 @@ class WbHttpException extends WbApiClientException
     public function getError(): WbErrorDto
     {
         return $this->error;
+    }
+
+    public function getStatus()
+    {
+        return $this->getStatus();
     }
 }

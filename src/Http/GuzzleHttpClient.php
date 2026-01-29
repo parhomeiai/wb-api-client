@@ -24,7 +24,13 @@ final class GuzzleHttpClient implements HttpClientInterface
     public function request(string $method, string $url, array $options = []): array
     {
         $response = $this->requestRaw($method, $url, $options);
-        return json_decode($response->getBody()->getContents(), true);
+
+        $responseContent = $response->getBody()->getContents();
+        if(!$responseContent){
+            return [];
+        }
+
+        return json_decode($responseContent, true);
     }
 
     public function requestRaw(string $method, string $url, array $options = []): ResponseInterface
