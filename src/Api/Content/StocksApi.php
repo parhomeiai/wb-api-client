@@ -103,6 +103,8 @@ class StocksApi extends AbstractWbApi
                     $e
                 );
             }
+
+            usleep(200_000);
         }
 
         return $stocksBatchResponse;
