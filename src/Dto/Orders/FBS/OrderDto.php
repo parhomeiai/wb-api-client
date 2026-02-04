@@ -309,7 +309,7 @@ class OrderDto
             (string)($data['deliveryType'] ?? ''),
             (string)($data['comment'] ?? ''),
             ($data['scanPrice'] ?? 0),
-            (isset($data['options']) ? (OrderOptionsDto::fromArray($data['options'])) : (null)),
+            OrderOptionsDto::fromArray($data['options'] ?? []),
             ($data['requiredMeta'] ?? []),
             ($data['optionalMeta'] ?? []),
             ($data['offices'] ?? []),
