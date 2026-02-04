@@ -16,6 +16,7 @@ use Escorp\WbApiClient\Api\Users\UsersApi;
 use Escorp\WbApiClient\Api\Content\ContentApi;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
 use Escorp\WbApiClient\Api\Content\StocksApi;
+use Escorp\WbApiClient\Api\Orders\OrdersFbsApi;
 
 use Escorp\WbApiClient\Auth\StaticTokenProvider;
 use Escorp\WbApiClient\Http\GuzzleHttpClient;
@@ -70,6 +71,7 @@ final class WbApiClientFactory
         $contentApi = new ContentApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $pricesApi = new PricesApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $stocksApi = new StocksApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
+        $ordersFbsApi = new OrdersFbsApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
 
         //Root client
         return new WbApiClient(
@@ -80,7 +82,8 @@ final class WbApiClientFactory
                     $usersApi,
                     $contentApi,
                     $pricesApi,
-                    $stocksApi
+                    $stocksApi,
+                    $ordersFbsApi
                 );
     }
 }
