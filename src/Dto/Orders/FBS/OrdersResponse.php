@@ -18,6 +18,12 @@ class OrdersResponse extends WbApiResponseDto
      */
     public array $orders = [];
 
+    /**
+     * Параметр пагинации
+     * @var int
+     */
+    public int $next = 0;
+
     public static function fromArray(array $response): self
     {
         $wbApiResponseDto = parent::fromArray($response);
@@ -30,11 +36,13 @@ class OrdersResponse extends WbApiResponseDto
             $dto->orders[] = OrderDto::fromArray($item);
         }
 
+        $dto->next = $response['next'] ?? 0;
+
         return $dto;
     }
 
     /**
-     * Возвращает остатки
+     * Возвращает заказы
      * @return OrderDto[]
      */
     public function orders(): array
