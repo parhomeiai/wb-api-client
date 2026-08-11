@@ -127,7 +127,7 @@ class OrdersFbsApi extends AbstractWbApi
             'POST',
             $this->getBaseUri(). '/api/v3/orders/status',
             [
-                'json' => ['orders' => $ordersIds]
+                'json' => ['orders' => array_map('intval', $ordersIds)]
             ]
         );
 

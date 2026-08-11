@@ -11,6 +11,7 @@ use Escorp\WbApiClient\Api\Content\ContentApi;
 use Escorp\WbApiClient\Api\Prices\PricesApi;
 use Escorp\WbApiClient\Api\Content\StocksApi;
 use Escorp\WbApiClient\Api\Orders\OrdersFbsApi;
+use Escorp\WbApiClient\Api\Orders\SuppliesFbsApi;
 
 class WbApiClient
 {
@@ -32,6 +33,8 @@ class WbApiClient
 
     public OrdersFbsApi $ordersFbsApi;
 
+    public SuppliesFbsApi $suppliesFbsApi;
+
     public function __construct(
             PingApi $ping,
             NewsApi $newsApi,
@@ -41,7 +44,8 @@ class WbApiClient
             ContentApi $contentApi,
             PricesApi $prices,
             StocksApi $stocks,
-            OrdersFbsApi $ordersFbsApi
+            OrdersFbsApi $ordersFbsApi,
+            SuppliesFbsApi $suppliesFbsApi
     ) {
         $this->ping = $ping;
         $this->newsApi = $newsApi;
@@ -52,6 +56,7 @@ class WbApiClient
         $this->prices = $prices;
         $this->stocks = $stocks;
         $this->ordersFbsApi = $ordersFbsApi;
+        $this->suppliesFbsApi = $suppliesFbsApi;
     }
 
     public function ping(): string
@@ -138,5 +143,14 @@ class WbApiClient
     public function ordersFbsApi(): OrdersFbsApi
     {
         return $this->ordersFbsApi;
+    }
+
+    /**
+     * Возвращает объект для работы с поставками FBS
+     * @return SuppliesFbsApi
+     */
+    public function suppliesFbsApi(): SuppliesFbsApi
+    {
+        return $this->suppliesFbsApi;
     }
 }
