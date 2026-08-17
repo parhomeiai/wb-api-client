@@ -3,12 +3,8 @@
 namespace Escorp\WbApiClient\Api\Orders;
 
 use Escorp\WbApiClient\Api\AbstractWbApi;
-use Escorp\WbApiClient\Dto\Orders\FBS\OrdersResponse;
-use Escorp\WbApiClient\Dto\Orders\FBS\OrdersStatusResponse;
-use Escorp\WbApiClient\Dto\Orders\FBS\OrdersReshipmentResponse;
-
-use InvalidArgumentException;
-use Escorp\WbApiClient\Exceptions\WbApiClientException;
+use Escorp\WbApiClient\Dto\Orders\FBS\SupplyResponse;
+use Escorp\WbApiClient\Dto\Orders\FBS\SupplyOrdersIdsResponse;
 
 /**
  * Поставки FBS(Fulfillment by Seller)
@@ -50,23 +46,35 @@ class SuppliesFbsApi extends AbstractWbApi
         return $response;
     }
 
-    public function supply(string $spplyId)
+    /**
+     * Получить информацию о поставке
+     *
+     * @param string $spplyId
+     * @return SupplyResponse
+     */
+    public function supply(string $spplyId): SupplyResponse
     {
         $response = $this->request(
             'GET',
             $this->getBaseUri(). '/api/v3/supplies/' . $spplyId
         );
 
-        return $response;
+        return SupplyResponse::fromArray($response);
     }
 
-    public function orderIds(string $spplyId)
+    /**
+     * Получить ID сборочных заданий поставки
+     * 
+     * @param string $spplyId
+     * @return SupplyOrdersIdsResponse
+     */
+    public function orderIds(string $spplyId): SupplyOrdersIdsResponse
     {
         $response = $this->request(
             'GET',
             $this->getBaseUri(). '/api/marketplace/v3/supplies/' . $spplyId . '/order-ids'
         );
 
-        return $response;
+        return SupplyOrdersIdsResponse::fromArray($response);
     }
 }
