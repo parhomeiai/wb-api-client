@@ -43,4 +43,10 @@ class WbHttpException extends WbApiClientException
     {
         return $this->getStatus();
     }
+
+    function getHttpStatus()
+    {
+        return $this->httpStatus;
+    }
+
 }

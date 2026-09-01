@@ -30,7 +30,7 @@ final class ResponseErrorDto
      * Возвращает данные ответа
      * @return mixed
      */
-    function getData(): mixed
+    function getData()
     {
         return $this->data;
     }

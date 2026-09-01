@@ -89,19 +89,21 @@ class StocksApi extends AbstractWbApi
      * @param int $chunk
      * @return StocksBatchResponse
      */
-    public function updateStocksBatch(int $warehouseId, array $stocks, int $chunk = 1000)
+    public function updateStocksBatch(int $warehouseId, array $stocks, int $chunk = 1000): StocksBatchResponse
     {
         $stocksBatchResponse = new StocksBatchResponse();
 
-        foreach (array_chunk($stocks, $chunk) as $part) {
+        foreach (array_chunk($stocks, $chunk) as $index => $part) {
             try{
+                $stocksBatchResponse->stocks[$index] = $part;
                 $this->updateStocks($warehouseId, $part);
             }catch(WbApiClientException $e){
-                $stocksBatchResponse->errors[] = new ResponseErrorDto(
+                $stocksBatchResponse->errors[$index] = new ResponseErrorDto(
                     $part,
                     $e->getMessage(),
                     $e
                 );
+                sleep(2);
             }
 
             usleep(200_000);

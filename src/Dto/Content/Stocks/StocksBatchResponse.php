@@ -5,6 +5,8 @@ namespace Escorp\WbApiClient\Dto\Content\Stocks;
 class StocksBatchResponse
 {
 
+    public array $stocks = [];
+
     /** @var ResponseErrorDto[] */
     public array $errors = [];
 
