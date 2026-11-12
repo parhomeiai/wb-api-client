@@ -52,6 +52,24 @@ class MetaFbsApi extends AbstractWbApi
         return MetaResponse::fromArray($response);
     }
 
-    
+    /**
+     * Удалить идентификаторы маркировки сборочного задания
+     *
+     * @param int $orderId
+     * @param string $key
+     * @return type
+     */
+    public function deleteMeta(int $orderId, string $key)
+    {
+        $response = $this->request(
+            'DELETE',
+            $this->getBaseUri(). '/api/v3/orders/' . $orderId . '/meta',
+            [
+                'query'   => ['key' => $key],
+            ]
+        );
+        
+        return $response;
+    }
 
 }
