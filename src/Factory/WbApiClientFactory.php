@@ -18,6 +18,7 @@ use Escorp\WbApiClient\Api\Prices\PricesApi;
 use Escorp\WbApiClient\Api\Content\StocksApi;
 use Escorp\WbApiClient\Api\Orders\OrdersFbsApi;
 use Escorp\WbApiClient\Api\Orders\SuppliesFbsApi;
+use Escorp\WbApiClient\Api\Orders\MetaFbsApi;
 
 use Escorp\WbApiClient\Auth\StaticTokenProvider;
 use Escorp\WbApiClient\Http\GuzzleHttpClient;
@@ -74,6 +75,7 @@ final class WbApiClientFactory
         $stocksApi = new StocksApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $ordersFbsApi = new OrdersFbsApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
         $suppliesFbsApi = new SuppliesFbsApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
+        $metaFbsApi = new MetaFbsApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
 
         //Root client
         return new WbApiClient(
@@ -86,7 +88,8 @@ final class WbApiClientFactory
                     $pricesApi,
                     $stocksApi,
                     $ordersFbsApi,
-                    $suppliesFbsApi
+                    $suppliesFbsApi,
+                    $metaFbsApi
                 );
     }
 }
