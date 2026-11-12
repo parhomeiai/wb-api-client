@@ -26,6 +26,17 @@ class ApiHostRegistry implements ApiHostRegistryInterface
         'marketplace'  => 'https://marketplace-api-sandbox.wildberries.ru',
     ];
 
+    private bool $debug = false;
+
+    public function __construct(bool $debug = false)
+    {
+        $this->debug = $debug;
+
+        if($debug){
+            $this->hosts = $this->hostsSandbox;
+        }
+    }
+
     /**
      * Возвращает хост раздела (common, prices, users, content)
      *

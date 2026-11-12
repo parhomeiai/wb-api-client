@@ -62,7 +62,8 @@ final class WbApiClientFactory
         $tokenProvider = new StaticTokenProvider($token);
 
         // Host Registry
-        $apiHostRegistry = new ApiHostRegistry();
+        $debug = (bool)($options['debug'] ?? false);
+        $apiHostRegistry = new ApiHostRegistry($debug);
 
         //Domain API
         $pingApi = new PingApi($guzzleHttpClient, $tokenProvider, $apiHostRegistry);
