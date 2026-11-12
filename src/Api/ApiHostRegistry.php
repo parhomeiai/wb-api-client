@@ -18,6 +18,14 @@ class ApiHostRegistry implements ApiHostRegistryInterface
         'marketplace'  => 'https://marketplace-api.wildberries.ru',
     ];
 
+    private array $hostsSandbox = [
+        'common'  => 'https://common-api.wildberries.ru',
+        'prices'  => 'https://discounts-prices-api.wildberries.ru',
+        'users'  => 'https://user-management-api.wildberries.ru',
+        'content'  => 'https://content-api-sandbox.wildberries.ru',
+        'marketplace'  => 'https://marketplace-api-sandbox.wildberries.ru',
+    ];
+
     /**
      * Возвращает хост раздела (common, prices, users, content)
      *
