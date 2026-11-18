@@ -56,7 +56,7 @@ class MetaFbsApi extends AbstractWbApi
      * Удалить идентификаторы маркировки сборочного задания
      *
      * @param int $orderId
-     * @param string $key
+     * @param string $key - imei — IMEI, uin — УИН, gtin — GTIN, sgtin — код маркировки Честного знака, customsDeclaration — номер ДТ
      * @return type
      */
     public function deleteMeta(int $orderId, string $key)
